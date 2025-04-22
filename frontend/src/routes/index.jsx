@@ -8,6 +8,8 @@ import InvoicesPage from '../features/invoices/InvoicesPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import RegisterPage from '../pages/RegisterPage'
 import ProtectedRoute from './ProtectedRoute'
+import UserListPage from '../features/users';
+
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
 	{
 		path: '/register',
 		element: <RegisterPage />
+	},
+	{
+		path: '/users',
+		element: (
+			<ProtectedRoute>
+				<UserListPage />
+			</ProtectedRoute>
+		)
 	},
 	{
 		path: '*',

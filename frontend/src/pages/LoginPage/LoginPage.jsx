@@ -17,6 +17,7 @@ function LoginPage() {
 				username,
 				password
 			});
+			console.log('res', res)
 			login({ username, role: res.data.role }, res.data.token);
 			alert("Đăng nhập thành côngcông!");
 			navigate("/");

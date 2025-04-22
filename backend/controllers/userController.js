@@ -35,14 +35,14 @@ const getUserById = async (req, res) => {
 // PUT /api/users/:id
 const updateUser = async (req, res) => {
 	const { id } = req.params;
-	const { name, email, role } = req.body;
+	const { fullname, email, role, isAvailable } = req.body;
 
 	try {
 		if (req.user.role !== 'admin' && req.user.userId !== id) {
 			return res.status(403).json({ message: 'Bạn không có quyền cập nhật người dùng này' });
 		}
 
-		const updateData = { name, email };
+		const updateData = { fullname, email, isAvailable };
 		if (req.user.role === 'admin' && role) updateData.role = role;
 		if (req.user.role !== 'admin' && role) res.status(400).json({ message: 'bạn không thể tự thăng mình làm quản lý' });
 		const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
@@ -64,7 +64,7 @@ const deleteUser = async (req, res) => {
 			return res.status(403).json({ message: 'Bạn không có quyền xóa người dùng này' });
 		}
 
-		const deleted = await User.findByIdAndDelete(id);
+		const deleted = await User.findByIdAndUpdate(id, { isAvailable: false }, { new: true }).select('-password');
 		if (!deleted) {
 			return res.status(404).json({ message: 'Không tìm thấy người dùng' });
 		}
