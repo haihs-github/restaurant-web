@@ -1,0 +1,40 @@
+.container {
+	max-width: 400px;
+	margin: 40px auto;
+	padding: 20px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+input,
+select,
+button {
+	padding: 10px;
+	font-size: 16px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+}
+
+button {
+	background: #007bff;
+	color: white;
+	cursor: pointer;
+	border: none;
+}
+
+button:hover {
+	background: #0056b3;
+}
+
+.message {
+	margin-top: 10px;
+	color: crimson;
+	font-weight: bold;
+}

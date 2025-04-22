@@ -6,20 +6,31 @@ import LoginPage from '../pages/LoginPage';
 import OrdersPage from '../features/orders/OrdersPage';
 import InvoicesPage from '../features/invoices/InvoicesPage';
 import NotFoundPage from '../pages/NotFoundPage';
-
+import RegisterPage from '../pages/RegisterPage'
+import ProtectedRoute from './ProtectedRoute'
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <AppLayout />,
 		children: [
 			{ index: true, element: <HomePage /> },
-			{ path: 'orders', element: <OrdersPage /> },
+			{
+				path: 'orders', element: (
+					<ProtectedRoute>
+						<OrdersPage />
+					</ProtectedRoute>
+				)
+			},
 			{ path: 'invoices', element: <InvoicesPage /> }
 		]
 	},
 	{
 		path: '/login',
 		element: <LoginPage />
+	},
+	{
+		path: '/register',
+		element: <RegisterPage />
 	},
 	{
 		path: '*',

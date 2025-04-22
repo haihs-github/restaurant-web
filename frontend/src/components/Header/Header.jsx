@@ -8,7 +8,7 @@ const Header = () => {
 
 	const handleLogout = () => {
 		logout();
-		navigate("/login");
+		navigate("/");
 	};
 
 	return (
@@ -31,7 +31,10 @@ const Header = () => {
 						<button onClick={handleLogout}>Đăng xuất</button>
 					</>
 				) : (
-					<Link to="/login">Đăng nhập</Link>
+					<>
+						<Link to="/login">Đăng nhập</Link>
+						<Link to="/register">Đăng ký</Link>
+					</>
 				)}
 			</div>
 		</header>

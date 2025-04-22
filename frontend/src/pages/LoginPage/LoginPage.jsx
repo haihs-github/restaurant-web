@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
 
 function LoginPage() {
 	const [username, setUsername] = useState("");
@@ -26,6 +27,7 @@ function LoginPage() {
 
 	return (
 		<div>
+			<Header />
 			<h2>Đăng nhập</h2>
 			<form onSubmit={handleSubmit}>
 				<input
