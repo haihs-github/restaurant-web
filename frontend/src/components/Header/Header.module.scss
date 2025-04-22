@@ -1,0 +1,35 @@
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	background-color: #222;
+	color: #fff;
+}
+
+.logo a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.nav a {
+	margin-right: 15px;
+	color: #fff;
+	text-decoration: none;
+}
+
+.nav a:hover {
+	text-decoration: underline;
+}
+
+.auth {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.auth span {
+	font-weight: 500;
+}
