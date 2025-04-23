@@ -19,11 +19,11 @@ const Header = () => {
 			<nav className={styles.nav}>
 				<>
 					<Link to="/">Trang chủ</Link>
-					{user && <Link to="/orders">Đơn hàng</Link>}
-					<Link to="/dishes">Món ăn</Link>
-					{user && <Link to="/invoices">Hóa đơn</Link>}
-					{user && <Link to="/users">Quản lý nhân viên</Link>}
 					{user && <Link to="/tables">Bàn ăn</Link>}
+					<Link to="/dishes">Món ăn</Link>
+					{user && <Link to="/orders">Đơn hàng</Link>}
+					{user && <Link to="/users">Quản lý nhân viên</Link>}
+					{user && <Link to="/invoices">Hóa đơn</Link>}
 				</>
 			</nav>
 			<div className={styles.auth}>

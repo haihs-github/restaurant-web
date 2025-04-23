@@ -10,6 +10,7 @@ import RegisterPage from '../pages/RegisterPage'
 import ProtectedRoute from './ProtectedRoute'
 // import UserListPage from '../features/users';
 import TableListPage from '../features/tables/TableListPage';
+import DishListPage from '../features/dishes/DishListPage'
 
 const router = createBrowserRouter([
 	{
@@ -17,14 +18,7 @@ const router = createBrowserRouter([
 		element: <AppLayout />,
 		children: [
 			{ index: true, element: <HomePage /> },
-			{
-				path: 'orders', element: (
-					<ProtectedRoute>
-						<OrdersPage />
-					</ProtectedRoute>
-				)
-			},
-			{ path: 'invoices', element: <InvoicesPage /> }
+
 		]
 	},
 	{
@@ -37,6 +31,11 @@ const router = createBrowserRouter([
 	},
 
 	{
+		path: '/dishes',
+		element: (
+			<DishListPage />
+		)
+	}, {
 		path: '/tables',
 		element: (
 			<ProtectedRoute requiredRole="admin">

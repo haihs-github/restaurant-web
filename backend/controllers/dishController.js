@@ -34,8 +34,10 @@ const updateDish = async (req, res) => {
 
 // [DELETE] /api/dishes/:id - xóa món ăn
 const deleteDish = async (req, res) => {
+	const { id } = req.params;
+
 	try {
-		await Dish.findByIdAndDelete(req.params.id);
+		await Dish.findByIdAndUpdate(id, { isAvailable: false }, { new: true }).select('-password');
 		res.json({ message: 'Đã xóa món ăn' });
 	} catch (err) {
 		res.status(400).json({ message: 'Xóa món ăn thất bại' });
