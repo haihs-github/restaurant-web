@@ -23,6 +23,7 @@ const Header = () => {
 					<Link to="/dishes">Món ăn</Link>
 					{user && <Link to="/invoices">Hóa đơn</Link>}
 					{user && <Link to="/users">Quản lý nhân viên</Link>}
+					{user && <Link to="/tables">Bàn ăn</Link>}
 				</>
 			</nav>
 			<div className={styles.auth}>

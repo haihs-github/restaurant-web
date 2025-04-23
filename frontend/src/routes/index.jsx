@@ -8,7 +8,8 @@ import InvoicesPage from '../features/invoices/InvoicesPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import RegisterPage from '../pages/RegisterPage'
 import ProtectedRoute from './ProtectedRoute'
-import UserListPage from '../features/users';
+// import UserListPage from '../features/users';
+import TableListPage from '../features/tables/TableListPage';
 
 const router = createBrowserRouter([
 	{
@@ -34,11 +35,12 @@ const router = createBrowserRouter([
 		path: '/register',
 		element: <RegisterPage />
 	},
+
 	{
-		path: '/users',
+		path: '/tables',
 		element: (
-			<ProtectedRoute>
-				<UserListPage />
+			<ProtectedRoute requiredRole="admin">
+				<TableListPage />
 			</ProtectedRoute>
 		)
 	},

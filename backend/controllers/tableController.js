@@ -12,20 +12,22 @@ const getAllTables = async (req, res) => {
 
 // [POST] Thêm bàn mới
 const createTable = async (req, res) => {
-	const { tableNumber, capacity } = req.body;
+	const { tableNumber, capacity, status } = req.body;
 
 	try {
 		const existing = await Table.findOne({ tableNumber });
-		if (existing) {
+		console.log('existing', existing)
+		if (existing && existing.isAvailable) {
 			return res.status(400).json({ message: 'Số bàn đã tồn tại' });
 		}
 
-		const newTable = new Table({ tableNumber, capacity });
+		const newTable = new Table({ tableNumber, capacity, status });
+		console.log('new table', newTable)
 		await newTable.save();
 
 		res.status(201).json(newTable);
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi thêm bàn' });
+		res.status(500).json({ message: 'Lỗi khi thêm bàn', err });
 	}
 };
 
@@ -50,7 +52,7 @@ const deleteTable = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const deleted = await Table.findByIdAndDelete(id);
+		const deleted = await Table.findByIdAndUpdate(id, { isAvailable: false }, { new: true }).select('-password');
 		if (!deleted) {
 			return res.status(404).json({ message: 'Không tìm thấy bàn' });
 		}
