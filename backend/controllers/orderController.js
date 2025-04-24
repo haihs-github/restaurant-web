@@ -11,6 +11,9 @@ const createOrder = async (req, res) => {
 			user_id,
 			status: 'pending',
 			orderedAt: new Date(),
+			customerName,
+			customerPhone,
+			emailCustomer
 		});
 
 		res.status(201).json(newOrder);
@@ -23,8 +26,8 @@ const createOrder = async (req, res) => {
 const getAllOrders = async (req, res) => {
 	try {
 		const orders = await Order.find()
-			.populate('table_id', 'tableNumber')   // chỉ lấy số bàn
-			.populate('user_id', 'fullname');      // chỉ lấy họ tên người tạo
+		// .populate('table_id', 'tableNumber')   // chỉ lấy số bàn
+		// .populate('user_id', 'fullname');      // chỉ lấy họ tên người tạo
 
 		res.status(200).json(orders);
 	} catch (err) {
@@ -60,7 +63,12 @@ const getOrderDetail = async (req, res) => {
 const updateOrder = async (req, res) => {
 	try {
 		const { orderId } = req.params;
-		const { table_id, status, orderedAt } = req.body;
+		const { table_id,
+			status,
+			orderedAt,
+			customerName,
+			customerPhone,
+			emailCustomer } = req.body;
 
 		// Kiểm tra trạng thái hợp lệ
 		const validStatuses = ['pending', 'confirmed', 'served', 'completed', 'rejected'];
@@ -70,7 +78,11 @@ const updateOrder = async (req, res) => {
 
 		const updatedOrder = await Order.findByIdAndUpdate(
 			orderId,
-			{ table_id, status, orderedAt },
+			{
+				table_id, status, orderedAt, customerName
+				, customerPhone
+				, emailCustomer
+			},
 			{ new: true, runValidators: true }
 		);
 

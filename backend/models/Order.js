@@ -27,7 +27,18 @@ const orderSchema = new Schema(
 				type: mongoose.Schema.Types.ObjectId,
 				ref: 'OrderItem'
 			}
-		]
+		],
+		customerName: {
+			type: String,
+			required: true
+		},
+		customerPhone: {
+			type: String,
+			required: true
+		},
+		emailCustomer: {
+			type: String,
+		}
 	},
 	{ timestamps: true }
 );

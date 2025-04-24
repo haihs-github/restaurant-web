@@ -11,6 +11,7 @@ import ProtectedRoute from './ProtectedRoute'
 // import UserListPage from '../features/users';
 import TableListPage from '../features/tables/TableListPage';
 import DishListPage from '../features/dishes/DishListPage'
+import UserListPage from '../features/users';
 
 const router = createBrowserRouter([
 	{
@@ -29,7 +30,14 @@ const router = createBrowserRouter([
 		path: '/register',
 		element: <RegisterPage />
 	},
+	{
+		path: '/users',
+		element:
+			<ProtectedRoute requiredRole="admin">
+				<UserListPage />
+			</ProtectedRoute>
 
+	},
 	{
 		path: '/dishes',
 		element: (

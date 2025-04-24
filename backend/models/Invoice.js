@@ -19,10 +19,7 @@ const invoiceSchema = new Schema(
 			type: String,
 			enum: ['paid', 'unpaid'],
 			default: 'unpaid'
-		},
-		customerName: String,
-		customerPhone: String,
-		emailCustomer: String
+		}
 	},
 	{ timestamps: true }
 );

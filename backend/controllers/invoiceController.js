@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 
 // Tạo hóa đơn cho đơn hàng đã hoàn tất
 const createInvoice = async (req, res) => {
-	const { order_id, customerName, customerPhone, emailCustomer } = req.body;
+	const { order_id } = req.body;
 
 	try {
 		const order = await Order.findById(order_id).populate({
@@ -22,9 +22,6 @@ const createInvoice = async (req, res) => {
 		const newInvoice = await Invoice.create({
 			order_id,
 			totalAmount,
-			customerName,
-			customerPhone,
-			emailCustomer
 		});
 
 		res.status(201).json({ message: '🧾 Hóa đơn được tạo thành công', invoice: newInvoice });
@@ -102,9 +99,6 @@ const updateInvoice = async (req, res) => {
 			invoiceId,
 			{
 				status,
-				customerName,
-				customerPhone,
-				emailCustomer
 			},
 			{ new: true }
 		);
