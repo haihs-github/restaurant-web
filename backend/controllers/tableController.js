@@ -34,19 +34,16 @@ const createTable = async (req, res) => {
 // [PUT] Cập nhật thông tin bàn
 const updateTable = async (req, res) => {
 	const { id } = req.params;
-
+	// const tableNumber = req.body.tableNumber
 	try {
-		const check = await Table.findById(id);
-		console.log('check', check)
-		const existing = await Table.findOne({ tableNumber: check.tableNumber, isAvailable: true })
-		if (existing && existing.isAvailable) {
-			return res.status(400).json({ message: 'Số bàn đã tồn tại' });
-		}
+		// const existings = await Table.find({ tableNumber: tableNumber, isAvailable: true })
+		// if (existings.length >= 1) {
+		// 	return res.status(400).json({ message: 'Số bàn đã tồn tại' });
+		// }
 		const updatedTable = await Table.findByIdAndUpdate(id, req.body, { new: true });
 		if (!updatedTable) {
 			return res.status(404).json({ message: 'Không tìm thấy bàn' });
 		}
-
 		res.json(updatedTable);
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi cập nhật bàn' });

@@ -19,7 +19,7 @@ const Header = () => {
 			<nav className={styles.nav}>
 				<>
 					<Link to="/">Trang chủ</Link>
-					{user && <Link to="/tables">Bàn ăn</Link>}
+					<Link to="/tables">Bàn ăn</Link>
 					<Link to="/dishes">Món ăn</Link>
 					{user && <Link to="/orders">Đơn hàng</Link>}
 					{user && <Link to="/users">Quản lý nhân viên</Link>}

@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { getAllTables, createTable, updateTable, deleteTable } from "./tableApi";
 import Header from "../../components/Header";
 import TableForm from "./TableForm";
+import OrderForm from "../orders/OrderForm";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TableListPage = () => {
 	const [tables, setTables] = useState([]);
 	const [editingTable, setEditingTable] = useState(null);
-
+	const [selectedTableId, setSelectedTableId] = useState('');
+	const { user } = useAuth();
 	const fetchTables = async () => {
 		const data = await getAllTables();
 		setTables(data.filter(t => t.isAvailable));
@@ -34,11 +37,16 @@ const TableListPage = () => {
 		}
 	};
 
+	const handleBooking = (id) => {
+		setSelectedTableId(id);
+	};
+
 	return (
 		<div>
 			<Header />
 			<h2>Danh sách bàn</h2>
-			<TableForm onSubmit={handleCreate} />
+			{user?.role === "admin" && <TableForm onSubmit={handleCreate} />}
+			<OrderForm initialTableId={selectedTableId} onOrderCreated={fetchTables} />
 			<table>
 				<thead>
 					<tr>
@@ -55,8 +63,9 @@ const TableListPage = () => {
 							<td>{table.capacity}</td>
 							<td>{table.status}</td>
 							<td>
-								<button onClick={() => setEditingTable(table)}>Sửa</button>
-								<button onClick={() => handleDelete(table._id)}>Xoá</button>
+								{user?.role === "admin" && <button onClick={() => setEditingTable(table)}>Sửa</button>}
+								{user?.role === "admin" && <button onClick={() => handleDelete(table._id)}>Xoá</button>}
+								<button onClick={() => handleBooking(table._id)}>Đặt</button>
 							</td>
 						</tr>
 					))}

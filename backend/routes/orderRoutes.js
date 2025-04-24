@@ -3,10 +3,15 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-// Tạo đơn hàng mới
+// Tạo đơn hàng mới (admin)
 // POST /api/orders/
 // private
 router.post('/', authMiddleware, orderController.createOrder);
+
+// Tạo đơn hàng mới (kh)
+// POST /api/orders/
+// public
+router.post('/client', orderController.createOrderClient);
 
 // Xem tất cả đơn hàng
 // GET /api/orders/

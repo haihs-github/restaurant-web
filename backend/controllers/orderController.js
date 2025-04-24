@@ -1,9 +1,9 @@
 const Order = require('../models/Order');
 
-// Tạo đơn hàng mới
+// Tạo đơn hàng mới ( admin)
 const createOrder = async (req, res) => {
 	try {
-		const { table_id } = req.body;
+		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
 		const user_id = req.user.userId; // lấy từ token
 
 		const newOrder = await Order.create({
@@ -21,6 +21,27 @@ const createOrder = async (req, res) => {
 		res.status(500).json({ message: 'Lỗi khi tạo đơn hàng', error: err.message });
 	}
 };
+// Tạo đơn hàng mới (nguoi dung)
+const createOrderClient = async (req, res) => {
+	try {
+		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
+		const user_id = '680a733986e68d405eb3bf11'; // lấy từ token
+
+		const newOrder = await Order.create({
+			table_id,
+			user_id,
+			status: 'pending',
+			orderedAt: new Date(),
+			customerName,
+			customerPhone,
+			emailCustomer
+		});
+
+		res.status(201).json(newOrder);
+	} catch (err) {
+		res.status(500).json({ message: 'Lỗi khi tạo đơn hàng', error: err.message });
+	}
+}
 
 // Xem danh sách đơn hàng
 const getAllOrders = async (req, res) => {
@@ -61,6 +82,8 @@ const getOrderDetail = async (req, res) => {
 
 // update đơn hàng 
 const updateOrder = async (req, res) => {
+	const user_id = req.user.userId; // lấy từ token
+
 	try {
 		const { orderId } = req.params;
 		const { table_id,
@@ -81,7 +104,8 @@ const updateOrder = async (req, res) => {
 			{
 				table_id, status, orderedAt, customerName
 				, customerPhone
-				, emailCustomer
+				, emailCustomer,
+				user_id
 			},
 			{ new: true, runValidators: true }
 		);
@@ -101,5 +125,5 @@ module.exports = {
 	getAllOrders,
 	updateOrder,
 	getOrderDetail,
-
+	createOrderClient
 };
