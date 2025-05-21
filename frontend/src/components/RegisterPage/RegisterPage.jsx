@@ -1,7 +1,7 @@
 // src/components/RegisterPage/RegisterPage.jsx
 import React, { useState } from 'react';
 import styles from './RegisterPage.module.scss';
-import Header from '../../components/Header';
+import Header from '../Header';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'
 

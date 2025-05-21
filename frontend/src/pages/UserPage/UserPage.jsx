@@ -2,24 +2,27 @@
 import styles from './UserPage.module.scss';
 import Sidebar from '../../components/SideBar';
 import Header from '../../components/Header';
-import UserTable from '../../components/UserTable';
-import Pagination from '../../components/Pagination';
 import { FaPlus } from 'react-icons/fa';
-import RegisterPage from '../RegisterPage/RegisterPage';
+import RegisterPage from '../../components/RegisterPage';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import UpdateUserForm from '../../components/UpdateUserForm';
 
 
 const UserPage = () => {
 	// const [currentPage, setCurrentPage] = useState(1);
 	const [showForm, setShowForm] = useState(false)
+	const [showUpdateForm, setShowUpdateForm] = useState(false)
 	const [users, setUsers] = useState([]);
 	const [page, setPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(1);
 	const [userCreated, setUserCreated] = useState(false)
+	const [userUpdate, setUserUpdate] = useState(false)
+	const [selectedUser, setSelectedUser] = useState(null);
+
 	const fetchUsers = async () => {
 		try {
-			const res = await axios.get(`http://localhost:5000/api/users?page=${page}&limit=10`, {
+			const res = await axios.get(`http://localhost:5000/api/users?page=${page}&limit=5`, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
@@ -45,6 +48,20 @@ const UserPage = () => {
 
 	const onUserCreated = () => {
 		setUserCreated(prev => !prev); // toggle để kích hoạt useEffect
+		setShowForm(false);    // ẩn form sau khi thêm
+	}
+
+	const handleShowUpdate = (id) => {
+		setShowUpdateForm(true)
+		setSelectedUser(id)
+	};
+
+	const handleHideUpdate = () => {
+		setShowUpdateForm(false);
+	};
+
+	const onUserUpdate = () => {
+		setUserUpdate(prev => !prev); // toggle để kích hoạt useEffect
 		setShowForm(false);    // ẩn form sau khi thêm
 	}
 
@@ -112,7 +129,7 @@ const UserPage = () => {
 										<td>{user.phone}</td>
 										<td>{user.role}</td>
 										<td>
-											<button className={styles.editButton}>Sửa</button>
+											<button className={styles.editButton} onClick={() => { handleShowUpdate(user._id) }}>Sửa</button>
 											<button className={styles.deleteButton} onClick={() => handleDeleteBtn(user._id)}>Xóa</button>
 										</td>
 									</tr>
@@ -151,6 +168,9 @@ const UserPage = () => {
 			</div>
 			{showForm && <RegisterPage handleHideRegister={handleHideRegister}
 				onUserCreated={onUserCreated}
+			/>}
+			{showUpdateForm && <UpdateUserForm id={selectedUser} handleHideUpdate={handleHideUpdate}
+				onUserUpdate={onUserUpdate} fetchUsers={fetchUsers}
 			/>}
 
 		</div >
