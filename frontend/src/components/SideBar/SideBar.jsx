@@ -30,7 +30,7 @@ const Sidebar = () => {
 						</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/dishes">
+						<Link to="/dishes">
 							<FaLock className={styles.navIcon} />
 							<span>Dishes</span>
 							<span className={styles.navBadge}>253</span>

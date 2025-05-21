@@ -1,0 +1,333 @@
+/* src/components/UploadFilesForm/AddDishForm.module.scss */
+
+// Variables for consistent styling (optional but good practice)
+$primary-color: #007bff; // Blue for primary actions
+$secondary-button-bg: #f8f9fa; // Light grey for secondary button
+$secondary-button-border: #ced4da; // Grey border for secondary button
+$text-color: #333; // Dark grey for general text
+$label-color: #555; // Slightly lighter grey for labels
+$border-color: #e0e0e0; // Light grey for borders
+$input-border: #ced4da; // Input field border color
+$input-focus-border: #80bdff; // Input field focus border
+$placeholder-color: #999; // Placeholder text color
+$modal-bg: #fff;
+$modal-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+$border-radius: 8px;
+$padding-base: 20px;
+$spacing-sm: 10px;
+$spacing-md: 15px;
+$spacing-lg: 20px;
+
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.modalContent {
+	background-color: $modal-bg;
+	border-radius: $border-radius;
+	box-shadow: $modal-shadow;
+	width: 680px; // Adjusted width to match the layout in the image
+	max-width: 90%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.modalHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: $padding-base;
+	border-bottom: 1px solid $border-color;
+}
+
+.modalTitle {
+	font-size: 1.15rem; // Slightly smaller title as per image
+	font-weight: 600; // Bold title as per image
+	color: $text-color;
+	margin: 0;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	font-size: 1.2rem; // Adjusted size
+	color: $placeholder-color; // Lighter color for close button
+	cursor: pointer;
+	transition: color 0.2s ease;
+
+	&:hover {
+		color: $text-color; // Darken on hover
+	}
+}
+
+.modalBody {
+	padding: $padding-base;
+	display: flex;
+	gap: $padding-base; // Space between left and right panels
+}
+
+.leftPanel {
+	flex: 0 0 250px; // Fixed width for left panel as seen in image
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: $spacing-md; // Internal padding
+}
+
+.dropZone {
+	border: 1px dashed $input-border; // Dashed border as in image
+	border-radius: 4px;
+	background-color: #fcfcfc; // Slightly off-white background
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: $spacing-lg;
+	text-align: center;
+	cursor: pointer;
+	transition: border-color 0.2s ease, background-color 0.2s ease;
+	height: 100%; // Fill available height in left panel
+	width: 100%;
+	box-sizing: border-box;
+
+	&:hover {
+		border-color: $primary-color; // Highlight on hover
+	}
+}
+
+.uploadIcon {
+	font-size: 2.5rem; // Larger icon
+	color: $placeholder-color; // Muted color
+	margin-bottom: $spacing-sm;
+}
+
+.dropText {
+	font-size: 0.95rem;
+	color: $text-color; // Darker text for main instruction
+	font-weight: 500;
+	margin-bottom: 5px;
+}
+
+.browseText {
+	font-size: 0.85rem;
+	color: $label-color; // Lighter text for secondary instruction
+}
+
+.browseLink {
+	color: $primary-color;
+	text-decoration: none;
+	font-weight: 500;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.imagePreviewContainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f0f0f0; // Light background for images
+}
+
+.imagePreview {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain; // Ensure image fits within bounds
+}
+
+.removeImageButton {
+	position: absolute;
+	top: $spacing-sm;
+	right: $spacing-sm;
+	background-color: rgba(0, 0, 0, 0.6); // Darker background for visibility
+	color: #fff;
+	border: none;
+	border-radius: 50%;
+	width: 28px; // Larger button
+	height: 28px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	font-size: 0.9rem; // Larger icon
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.8);
+	}
+}
+
+.rightPanel {
+	flex: 1; // Takes remaining space
+	display: flex;
+	flex-direction: column;
+}
+
+// Remove .tabs and .tabButton as per the new image,
+// "Mô tả món ăn" is now a title, not a tab.
+.tabs {
+	// This div is still needed for "Mô tả món ăn" styling,
+	// but its role as a tab container is visually removed.
+	padding-bottom: $spacing-md;
+	border-bottom: 1px solid $border-color;
+	margin-bottom: $padding-base; // Space after the "Mô tả món ăn" line
+}
+
+.tabButton {
+	background: none;
+	border: none;
+	font-size: 1rem;
+	font-weight: 600; // Bold for the active section title
+	color: $text-color;
+	padding: 0 0 $spacing-sm 0; // Padding only at bottom for underline effect
+	cursor: default; // Not a clickable tab anymore
+	position: relative;
+	outline: none; // Remove outline on click/focus
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 2px; // Underline effect
+		background-color: $primary-color;
+	}
+
+	// Ensure other tab buttons are hidden if they exist, or remove them from JSX
+	&:not(.active) {
+		display: none; // Hide non-active "tabs" as per image
+	}
+}
+
+.tabContent {
+	flex-grow: 1; // Allow content to fill space
+}
+
+.formGroup {
+	margin-bottom: $spacing-md;
+}
+
+.formLabel {
+	display: block;
+	font-size: 0.9rem;
+	color: $label-color;
+	margin-bottom: $spacing-sm - 2px; // Slightly less space
+	font-weight: 400; // Regular weight for labels
+}
+
+.inputWrapper {
+	// No explicit border here, input/select/textarea will have their own
+	// This wrapper isn't strictly needed if inputs are styled directly
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+	border: 1px solid $input-border; // Light grey border
+	border-radius: 4px;
+	padding: 9px 12px; // Adjusted padding
+	font-size: 0.95rem; // Slightly smaller font size
+	color: $text-color;
+	width: 100%;
+	box-sizing: border-box;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+	&:focus {
+		border-color: $primary-color; // Blue border on focus
+		box-shadow: 0 0 0 2px rgba($primary-color, 0.25); // Subtle shadow
+	}
+
+	&::placeholder {
+		color: $placeholder-color; // Lighter placeholder text
+		opacity: 1; // Firefox compatibility
+	}
+}
+
+.formSelect {
+	appearance: none; // Remove default select arrow
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236c757d'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center; // Position custom arrow
+	background-size: 16px 16px;
+	padding-right: 30px; // Make space for the arrow
+	cursor: pointer;
+}
+
+.formTextarea {
+	min-height: 80px; // Maintain minimum height
+	resize: vertical;
+}
+
+.formActions {
+	display: flex;
+	justify-content: flex-end;
+	padding-top: $padding-base;
+	border-top: 1px solid $border-color;
+	margin-top: $padding-base; // Space before buttons
+}
+
+.btn {
+	padding: 10px 22px; // Adjusted padding for buttons
+	border-radius: 4px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+	border: 1px solid transparent; // Default transparent border for consistency
+	font-weight: 500;
+}
+
+.btnPrimary {
+	background-color: $primary-color;
+	color: #fff;
+	border-color: $primary-color;
+
+	&:hover {
+		background-color: darken($primary-color, 8%);
+		border-color: darken($primary-color, 8%);
+	}
+
+	&:active {
+		background-color: darken($primary-color, 12%);
+		border-color: darken($primary-color, 12%);
+		box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	}
+}
+
+.btnSecondary {
+	background-color: $secondary-button-bg;
+	color: $text-color;
+	border-color: $secondary-button-border;
+
+	&:hover {
+		background-color: darken($secondary-button-bg, 3%);
+		border-color: darken($secondary-button-border, 5%);
+	}
+
+	&:active {
+		background-color: darken($secondary-button-bg, 5%);
+		border-color: darken($secondary-button-border, 8%);
+		box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.08);
+	}
+
+	margin-left: $spacing-sm;
+}

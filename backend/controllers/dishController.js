@@ -99,7 +99,7 @@ exports.updateDish = async (req, res) => {
 exports.deleteDish = async (req, res) => {
 	const dish_id = req.params.id;
 	try {
-		await Dish.findByIdAndUpdate(dish_id, { isAvailable: false }, { new: true }).select('-password');
+		await Dish.findByIdAndUpdate(dish_id, { deleted: true }, { new: true }).select('-password');
 		res.json({ message: 'Đã xóa món ăn' });
 	} catch (err) {
 		res.status(400).json({ message: 'Xóa món ăn thất bại' });
