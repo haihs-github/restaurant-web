@@ -13,7 +13,10 @@ body {
 	padding: 15px 30px;
 	background-color: #fff;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	position: relative;
+	position: fixed;
+	margin-bottom: 100px;
+	top: 0;
+	width: 95%;
 	/* Đảm bảo khoảng cách hợp lý giữa các mục khi màn hình lớn */
 	gap: 20px; // Thêm gap để các phần tử con không bị dính vào nhau
 }

@@ -21,7 +21,11 @@ function LoginPage() {
 			const res = await axios.post('http://localhost:5000/api/auth/login', formData);
 			login(res.data.token); // ✅ Gọi hàm login của AuthContext
 			alert('Đăng nhập thành công!');
-			navigate('/'); // Điều hướng sau đăng nhập (tuỳ chỉnh)
+			if (window.history.length > 1) {
+				navigate(-1); // quay lại trang trước nếu có
+			} else {
+				navigate('/'); // hoặc chuyển hướng về trang đăng nhập
+			}
 		} catch (err) {
 			alert(err.response?.data?.message || 'Đăng nhập thất bại');
 		}
@@ -63,7 +67,7 @@ function LoginPage() {
 
 				<p className={styles.authCardFooter}>
 					Không có tài khoản{" "}
-					<Link to="/signup" className={styles.signupLink}>Đăng ký ngay!</Link>
+					<Link to="/register" className={styles.signupLink}>Đăng ký ngay!</Link>
 				</p>
 			</div>
 		</div>
