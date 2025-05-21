@@ -1,42 +1,35 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import styles from "./Header.module.scss";
+// src/components/Header/Header.jsx (hoặc tương tự)
+import styles from './Header.module.scss'; // Import CSS cho component này
+import logo from '../../assets/react.svg'; // Đảm bảo đường dẫn đến logo đúng
 
-const Header = () => {
-	const { user, logout } = useAuth();
-	const navigate = useNavigate();
+import { useState } from "react"; // sửa lại đúng tên hook
+import { Link } from "react-router-dom";
 
-	const handleLogout = () => {
-		logout();
-		navigate("/");
-	};
+import Button from '../Button';
+
+function Header() {
+
+	const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 	return (
-		<header className={styles.header}>
-			<div className={styles.logo}>
-				<Link to="/">🍽️ Quản lý nhà hàng</Link>
+		<header className={styles.mainHeader}>
+			<div className="headerLogo">
+				<img src={logo} alt="Codi House Logo" />
 			</div>
-			<nav className={styles.nav}>
-				<>
-					<Link to="/">Trang chủ</Link>
-					<Link to="/tables">Bàn ăn</Link>
-					<Link to="/dishes">Món ăn</Link>
-					{user && <Link to="/orders">Đơn hàng</Link>}
-					{user && <Link to="/users">Quản lý nhân viên</Link>}
-					{user && <Link to="/invoices">Hóa đơn</Link>}
-				</>
+			<nav className={styles.headerNav}>
+				<ul>
+					<li><Link to="/">Trang Chủ</Link></li>
+				</ul>
 			</nav>
-			<div className={styles.auth}>
-				{user ? (
-					<>
-						<span>{user.username} ({user.role})</span>
-						<button onClick={handleLogout}>Đăng xuất</button>
-					</>
+			{/* Thêm phần nút Đăng nhập/Đăng xuất */}
+			<div className={styles.userActions}> {/* Áp dụng CSS Module cho div này */}
+				{isLoggedIn ? (
+					// Nếu đã đăng nhập, hiển thị nút Đăng xuất
+					<Button content="đăng xuất" backgroundColor="red" color="#fff" />
 				) : (
-					<>
-						<Link to="/login">Đăng nhập</Link>
-						<Link to="/register">Đăng ký</Link>
-					</>
+					// Nếu chưa đăng nhập, hiển thị nút Đăng nhập
+					<Button content="đăng nhập" backgroundColor="#00d8ff" color="#fff" />
+
 				)}
 			</div>
 		</header>

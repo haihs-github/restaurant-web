@@ -1,51 +1,73 @@
-import { useState } from "react";
-import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
+import Button from '../../components/Button';
+import Header from '../../components/Header'
+import styles from './LoginPage.module.scss'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext'; // Đường dẫn đúng theo dự án của bạn
 
 function LoginPage() {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
 	const { login } = useAuth();
+	const [formData, setFormData] = useState({ username: '', password: '' });
 	const navigate = useNavigate();
+
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const res = await axios.post("http://localhost:5000/api/auth/login", {
-				username,
-				password
-			});
-			console.log('res', res)
-			login({ username, role: res.data.role }, res.data.token);
-			alert("Đăng nhập thành côngcông!");
-			navigate("/");
+			const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+			login(res.data.token); // ✅ Gọi hàm login của AuthContext
+			alert('Đăng nhập thành công!');
+			navigate('/'); // Điều hướng sau đăng nhập (tuỳ chỉnh)
 		} catch (err) {
-			alert("Đăng nhập thất bại: " + err.response?.data?.message || err.message);
+			alert(err.response?.data?.message || 'Đăng nhập thất bại');
 		}
 	};
 
-	return (
-		<div>
-			<Header />
-			<h2>Đăng nhập</h2>
-			<form onSubmit={handleSubmit}>
-				<input
-					type="text"
-					value={username}
-					onChange={(e) => setUsername(e.target.value)}
-					placeholder="Tên đăng nhập"
-				/>
-				<input
-					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					placeholder="Mật khẩu"
-				/>
-				<button type="submit">Đăng nhập</button>
-			</form>
+	return (<>
+		<Header />
+		<div className={styles.authPageContainer}>
+			<div className={styles.authCard}>
+				<h2 className={styles.authCardTitle}>Chào mừng quay lại</h2>
+
+				<form onSubmit={handleSubmit} className={styles.authForm}>
+					<div className={styles.formGroup}>
+						<input
+							type="text"
+							id="username"
+							name="username"
+							value={formData.username}
+							onChange={handleChange}
+							placeholder="Tên tài khoản"
+							className={styles.formInput}
+							required
+						/>
+					</div>
+					<div className={styles.formGroup}>
+						<input
+							type="password"
+							id="password"
+							name="password"
+							value={formData.password}
+							onChange={handleChange}
+							placeholder="Mật khẩu"
+							className={styles.formInput}
+							required
+						/>
+					</div>
+					<Button type="submit" content="Đăng nhập" backgroundColor="#00d8ff" color="#fff" />
+				</form>
+
+				<p className={styles.authCardFooter}>
+					Không có tài khoản{" "}
+					<Link to="/signup" className={styles.signupLink}>Đăng ký ngay!</Link>
+				</p>
+			</div>
 		</div>
+	</>
 	);
 }
 

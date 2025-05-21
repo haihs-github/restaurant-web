@@ -1,67 +1,80 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 
-// Tạo đơn hàng mới ( admin)
-const createOrder = async (req, res) => {
+//[POST] /api/orders/ Tạo đơn đặt bàn mới ( admin)
+exports.createOrder = async (req, res) => {
 	try {
 		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
 		const user_id = req.user.userId; // lấy từ token
 
+		if (!table_id || !customerName || !customerPhone || !emailCustomer || !user_id) {
+			return res.status(400).json("thiếu dữ liêụ khi tạo đơn đặt bàn")
+		}
+
 		const newOrder = await Order.create({
 			table_id,
 			user_id,
-			status: 'pending',
-			orderedAt: new Date(),
 			customerName,
 			customerPhone,
 			emailCustomer
 		});
-
-		res.status(201).json(newOrder);
+		res.status(200).json({ message: "Tạo đơn đặt bàn thành công", newOrder });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi tạo đơn hàng', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi tạo đơn đặt bàn', error: err.message });
 	}
 };
-// Tạo đơn hàng mới (nguoi dung)
-const createOrderClient = async (req, res) => {
+
+//[POST] /api/client Tạo đơn đặt bàn mới (nguoi dung)
+exports.createOrderClient = async (req, res) => {
 	try {
 		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
-		const user_id = '680a733986e68d405eb3bf11'; // lấy từ token
+
+		if (!table_id || !customerName || !customerPhone || !emailCustomer || !user_id) {
+			return res.status(400).json("thiếu dữ liêụ khi tạo đơn đặt bàn")
+		}
+
+		const user = await User.findOne({ username: "admin" })
+		const user_id = user._id
 
 		const newOrder = await Order.create({
 			table_id,
 			user_id,
-			status: 'pending',
-			orderedAt: new Date(),
 			customerName,
 			customerPhone,
 			emailCustomer
 		});
 
-		res.status(201).json(newOrder);
+		res.status(200).json({ message: "đặt bàn thành công", newOrder });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi tạo đơn hàng', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi tạo đơn đặt bàn', error: err.message });
 	}
 }
 
-// Xem danh sách đơn hàng
-const getAllOrders = async (req, res) => {
+//[GET] api/orders?page=1&limit=10 Xem danh sách đơn đặt bàn
+exports.getAllOrders = async (req, res) => {
 	try {
-		const orders = await Order.find()
-		// .populate('table_id', 'tableNumber')   // chỉ lấy số bàn
-		// .populate('user_id', 'fullname');      // chỉ lấy họ tên người tạo
+		// phan trang
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
 
-		res.status(200).json(orders);
+		const orders = await Order.find({ deleted: false })
+			.skip(skip).limit(limit).sort({ createAt: -1 })
+
+		const totalPage = Math.ceil(orders.length / limit)
+
+		res.status(200).json({ message: "lấy danh sách đơn đặt bàn thành công", orders, totalPage });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi lấy danh sách đơn hàng', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi lấy danh sách đơn đặt bàn', error: err.message });
 	}
 };
 
-// xem chi tiết đơn hàng 
-const getOrderDetail = async (req, res) => {
+//[GET] api/orders/:orderId xem chi tiết đơn đặt bàn 
+exports.getOrderDetail = async (req, res) => {
 	try {
 		const { orderId } = req.params;
 
-		// Lấy thông tin đơn hàng + danh sách các món trong đơn
+		// Lấy thông tin đơn đặt bàn + danh sách các món trong đơn
 		const order = await Order.findById(orderId).populate({
 			path: 'orderItems',
 			populate: {
@@ -71,17 +84,17 @@ const getOrderDetail = async (req, res) => {
 		});
 
 		if (!order) {
-			return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
 		}
 
-		res.json(order);
+		res.status(200).json({ message: "Lấy chi tiết đơn thành công", order });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi lấy chi tiết đơn hàng', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi lấy chi tiết đơn đặt bàn', error: err.message });
 	}
 };
 
-// update đơn hàng 
-const updateOrder = async (req, res) => {
+//[PUT] /api/orders/:orderId update đơn đặt bàn 
+exports.updateOrder = async (req, res) => {
 	const user_id = req.user.userId; // lấy từ token
 
 	try {
@@ -99,6 +112,10 @@ const updateOrder = async (req, res) => {
 			return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
 		}
 
+		if (!orderId || !status || !orderedAt || !customerName || !customerPhone || !emailCustomer) {
+			return res.status(400).json({ message: "thiếu thông tin khi sửa đơn hàng" })
+		}
+
 		const updatedOrder = await Order.findByIdAndUpdate(
 			orderId,
 			{
@@ -111,19 +128,36 @@ const updateOrder = async (req, res) => {
 		);
 
 		if (!updatedOrder) {
-			return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
 		}
 
-		res.json(updatedOrder);
+		res.json({ message: "Cập nhật đơn hàng thành công", updatedOrder });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi cập nhật đơn hàng', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err.message });
 	}
 };
 
-module.exports = {
-	createOrder,
-	getAllOrders,
-	updateOrder,
-	getOrderDetail,
-	createOrderClient
+//[DELETE] api/orders/:orderId Xóa đơn đặt bàn 
+exports.getOrderDetail = async (req, res) => {
+	try {
+		const { orderId } = req.params;
+
+		// Lấy thông tin đơn đặt bàn + danh sách các món trong đơn
+		const order = await Order.findByIdAndUpdate(orderId,
+			{ deleted: true }).populate({
+				path: 'orderItems',
+				populate: {
+					path: 'dish_id',
+					select: 'name price description', // Lấy thông tin món ăn
+				},
+			});
+
+		if (!order) {
+			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
+		}
+
+		res.status(200).json({ message: "xóa chi tiết đơn thành công", order });
+	} catch (err) {
+		res.status(500).json({ message: 'Lỗi khi xóa chi tiết đơn đặt bàn', error: err.message });
+	}
 };

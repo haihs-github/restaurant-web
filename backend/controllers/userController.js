@@ -1,83 +1,73 @@
 const User = require('../models/User');
 
-// GET /api/users
-const getAllUsers = async (req, res) => {
+// [GET] /api/users?page=1&limit=10 lấy toàn bộ user 
+exports.getAllUsers = async (req, res) => {
 	try {
-		if (req.user.role !== 'admin') {
-			return res.status(403).json({ message: 'Bạn không có quyền truy cập danh sách người dùng' });
-		}
-		const users = await User.find().select('-password');
-		res.json(users);
+		// phan trang
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+
+		const users = await User.find({ deleted: false }).select('-password')
+		skip(skip).limit(limit).sort(username);
+		const totalPage = Math.ceil(users.length / limit)
+
+		res.status(200).json({ message: "lấy danh sách user thành công", users, totalPage });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi lấy danh sách người dùng', error: err.message });
 	}
 };
 
-// GET /api/users/:id
-const getUserById = async (req, res) => {
+// [GET] /api/users/:id lấy chi tiết 1 người dùng
+exports.getUserById = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.user.role !== 'admin' && req.user.userId !== id) {
-			return res.status(403).json({ message: 'Bạn không có quyền xem người dùng này' });
-		}
-
 		const user = await User.findById(id).select('-password');
 		if (!user) {
 			return res.status(404).json({ message: 'Không tìm thấy người dùng' });
 		}
 
-		res.json(user);
+		res.status(200).json({ message: "lấy thông tin người dùng thành công", user });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi lấy thông tin người dùng', error: err.message });
 	}
 };
 
-// PUT /api/users/:id
-const updateUser = async (req, res) => {
+// [PUT] /api/users/:id
+exports.updateUser = async (req, res) => {
 	const { id } = req.params;
-	const { fullname, email, role, isAvailable } = req.body;
+	const { fullname, email, role, phone } = req.body;
 
 	try {
-		if (req.user.role !== 'admin' && req.user.userId !== id) {
-			return res.status(403).json({ message: 'Bạn không có quyền cập nhật người dùng này' });
+		if (!fullname || !email || !role || !phone) {
+			return res.status(200).json({ message: "thiếu thông tin khi sửa người dùng" })
 		}
-
-		const updateData = { fullname, email, isAvailable };
-		if (req.user.role === 'admin' && role) updateData.role = role;
-		if (req.user.role !== 'admin' && role) res.status(400).json({ message: 'bạn không thể tự thăng mình làm quản lý' });
-		const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+		const updatedUser = await User.findByIdAndUpdate(id,
+			{ fullname, email, role, phone },
+			{ new: true }).select('-password'
+			);
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'Không tìm thấy người dùng' });
 		}
 
-		res.json({ message: '✅ Cập nhật thành công', user: updatedUser });
+		res.json({ message: 'Cập nhật thành công', user: updatedUser });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi cập nhật người dùng', error: err.message });
 	}
 };
 
-// DELETE /api/users/:id
-const deleteUser = async (req, res) => {
+// [DELETE] /api/users/:id
+exports.deleteUser = async (req, res) => {
 	const { id } = req.params;
 	try {
-		if (req.user.role !== 'admin' && req.user.userId !== id) {
-			return res.status(403).json({ message: 'Bạn không có quyền xóa người dùng này' });
-		}
-
-		const deleted = await User.findByIdAndUpdate(id, { isAvailable: false }, { new: true }).select('-password');
+		const deleted = await User.findByIdAndUpdate(id, { delete: true }, { new: true }).select('-password');
 		if (!deleted) {
 			return res.status(404).json({ message: 'Không tìm thấy người dùng' });
 		}
 
-		res.json({ message: '🗑️ Xóa người dùng thành công' });
+		res.json({ message: 'Xóa người dùng thành công' });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi xóa người dùng', error: err.message });
 	}
 };
 
-module.exports = {
-	getAllUsers,
-	getUserById,
-	updateUser,
-	deleteUser
-};

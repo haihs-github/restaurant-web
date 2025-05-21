@@ -1,26 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const dishController = require('../controllers/dishController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { verifyToken, isAdmin } = require('../middlewares/auth')
+const upload = require('../middlewares/upload');
+const { image } = require('../utils/cloudinary');
 
-//GET /api/tables/
+
+//GET /api/dishes/
 //xem tat ca món
 //public
-router.get('/', dishController.getAllDishes);
+router.get('', dishController.getAllDishes);
 
-//POST /api/tables/
+//POST /api/dishes/
 //them 1 mon 
 //private 
-router.post('/', authMiddleware, dishController.createDish);
+router.post('', verifyToken, isAdmin, upload.single('thumbnail'), dishController.createDish);
 
-//PUT /api/tables/:id
+//PUT /api/dishes/:id
 //sua 1 mon 
 //private 
-router.put('/:id', authMiddleware, dishController.updateDish);
+router.put('/:id', verifyToken, isAdmin, upload.single('thumbnail'), dishController.updateDish);
 
-//DELETE /api/tables/
+//DELETE /api/dishes/
 //xoa 1 mon 
 //private 
-router.delete('/:id', authMiddleware, dishController.deleteDish);
+router.delete('/:id', verifyToken, isAdmin, dishController.deleteDish);
 
 module.exports = router;

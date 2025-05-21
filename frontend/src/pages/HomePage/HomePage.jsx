@@ -1,13 +1,9 @@
-import Header from "../../components/Header";
-
-const HomePage = () => {
-
+function HomePage() {
 	return (
 		<div>
-			<Header />
-			<h2>Trang chủ</h2>
+			HomePage
 		</div>
 	);
-};
+}
 
 export default HomePage;

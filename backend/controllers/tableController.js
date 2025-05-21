@@ -1,74 +1,87 @@
 const Table = require('../models/Table');
 
-// [GET] Lấy danh sách tất cả bàn
-const getAllTables = async (req, res) => {
+// [GET] /api/tables?page=1&limit=10 Lấy danh sách tất cả bàn
+exports.getAllTables = async (req, res) => {
 	try {
-		const tables = await Table.find();
-		res.json(tables);
+		// phan trang
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+
+		const tables = await Table.find({ deleted: false })
+			.skip(skip).limit(limit).sort({ tableNumber: -1 });
+
+		const totalPage = Math.ceil(tables.length / limit)
+		res.json({ message: "lay danh sach ban thanh cong", tables, totalPage });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi lấy danh sách bàn' });
 	}
 };
 
 // [POST] Thêm bàn mới
-const createTable = async (req, res) => {
-	const { tableNumber, capacity, status } = req.body;
+exports.createTable = async (req, res) => {
+	const { tableNumber, capacity } = req.body;
 
 	try {
-		const existing = await Table.findOne({ tableNumber });
+		if (!tableNumber || !capacity) {
+			return res.status(400).json({ message: "Thiếu thông tin khi tạo bàn" })
+		}
+		const existing = await Table.findOne({ tableNumber, deleted: false });
 		console.log('existing', existing)
-		if (existing && existing.isAvailable) {
+		if (existing) {
 			return res.status(400).json({ message: 'Số bàn đã tồn tại' });
 		}
 
-		const newTable = new Table({ tableNumber, capacity, status });
-		console.log('new table', newTable)
+		const newTable = new Table({ tableNumber, capacity });
 		await newTable.save();
 
-		res.status(201).json(newTable);
+		res.status(200).json({ message: "tạo bàn thành công", newTable });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi thêm bàn', err });
 	}
 };
 
-// [PUT] Cập nhật thông tin bàn
-const updateTable = async (req, res) => {
+// [PUT] /api/tables/:id Cập nhật thông tin bàn
+exports.updateTable = async (req, res) => {
 	const { id } = req.params;
-	// const tableNumber = req.body.tableNumber
+	const { tableNumber, capacity, status } = req.body;
+
 	try {
-		// const existings = await Table.find({ tableNumber: tableNumber, isAvailable: true })
-		// if (existings.length >= 1) {
-		// 	return res.status(400).json({ message: 'Số bàn đã tồn tại' });
-		// }
-		const updatedTable = await Table.findByIdAndUpdate(id, req.body, { new: true });
+
+		if (!tableNumber || !capacity || !status) {
+			return res.status(400).json({ message: "Thiếu thông tin khi sửa bàn" })
+		}
+
+		const existing = await Table.findOne({ tableNumber, deleted: false });
+		console.log('existing', existing)
+		if (existing) {
+			return res.status(400).json({ message: 'Số bàn đã tồn tại' });
+		}
+
+		const newTable = new Table({ tableNumber, capacity, status });
+
+		const updatedTable = await Table.findByIdAndUpdate(id, newTable, { new: true });
 		if (!updatedTable) {
 			return res.status(404).json({ message: 'Không tìm thấy bàn' });
 		}
-		res.json(updatedTable);
+		res.status(200).json({ message: "bàn đã cập nhật thành công", updatedTable });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi cập nhật bàn' });
 	}
 };
 
 // [DELETE] Xóa bàn
-const deleteTable = async (req, res) => {
+exports.deleteTable = async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const deleted = await Table.findByIdAndUpdate(id, { isAvailable: false }, { new: true }).select('-password');
+		const deleted = await Table.findByIdAndUpdate(id, { deleted: true }, { new: true }).select('-password');
 		if (!deleted) {
 			return res.status(404).json({ message: 'Không tìm thấy bàn' });
 		}
 
-		res.json({ message: 'Xóa bàn thành công' });
+		res.status(200).json({ message: 'Xóa bàn thành công' });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi xóa bàn' });
 	}
-};
-
-module.exports = {
-	getAllTables,
-	createTable,
-	updateTable,
-	deleteTable,
 };

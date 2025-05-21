@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const tableSchema = new mongoose.Schema({
 	tableNumber: {
 		type: Number,
-		required: true,
 	},
 
 	capacity: {
@@ -16,10 +15,9 @@ const tableSchema = new mongoose.Schema({
 		enum: ['available', 'booked', 'in_service'],
 		default: 'available',
 	},
-
-	isAvailable: {
+	deleted: {
 		type: Boolean,
-		default: true,
+		default: false,
 	}
 }, { timestamps: true });
 

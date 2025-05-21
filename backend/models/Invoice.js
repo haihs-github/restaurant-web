@@ -19,6 +19,10 @@ const invoiceSchema = new Schema(
 			type: String,
 			enum: ['paid', 'unpaid'],
 			default: 'unpaid'
+		},
+		deleted: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	{ timestamps: true }

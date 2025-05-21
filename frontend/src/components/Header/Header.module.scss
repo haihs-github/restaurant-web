@@ -1,35 +1,79 @@
-.header {
+/* General Body Styles (optional, for better visual context) */
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	background-color: #f8f8f8;
+}
+
+/* Main Header Styles */
+.mainHeader {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px 20px;
-	background-color: #222;
-	color: #fff;
+	padding: 15px 30px;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	position: relative;
+	/* Đảm bảo khoảng cách hợp lý giữa các mục khi màn hình lớn */
+	gap: 20px; // Thêm gap để các phần tử con không bị dính vào nhau
 }
 
-.logo a {
-	color: #fff;
+/* Navigation Styles */
+.headerNav ul {
+	list-style: none;
+	/* Bỏ dấu chấm đầu dòng của list */
+	margin: 0;
+	padding: 0;
+	display: flex;
+	/* Dùng Flexbox cho các mục menu */
+	gap: 40px;
+	/* Khoảng cách giữa các mục menu (CSS mới hơn) */
+	/* Hoặc dùng margin-left cho các trình duyệt cũ hơn */
+}
+
+.headerNav li a {
 	text-decoration: none;
-	font-size: 1.5rem;
-	font-weight: bold;
+	/* Bỏ gạch chân link */
+	color: #333;
+	/* Màu chữ */
+	font-size: 1.1em;
+	/* Kích thước chữ */
+	font-weight: 600;
+	/* Độ đậm của chữ */
+	transition: color 0.3s ease;
+	/* Hiệu ứng chuyển màu khi hover */
 }
 
-.nav a {
-	margin-right: 15px;
-	color: #fff;
-	text-decoration: none;
+.headerNav li a:hover {
+	color: #e74c3c;
+	/* Màu khi hover (ví dụ: đỏ) */
 }
 
-.nav a:hover {
-	text-decoration: underline;
-}
-
-.auth {
+.userActions {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	/* Bạn có thể thêm gap giữa các nút nếu có nhiều hơn một */
 }
 
-.auth span {
-	font-weight: 500;
+// user action
+
+.logoutButton {
+	background-color: #e74c3c;
+}
+
+
+/* Responsive adjustments for smaller screens (e.g., mobile) */
+@media (max-width: 768px) {
+	.headerNav {
+		display: none;
+		/* Ẩn menu navigation trên mobile */
+	}
+
+	.menuToggle {
+		display: flex;
+		/* Hiển thị biểu tượng hamburger trên mobile */
+	}
+
+	/* You would typically add JavaScript to toggle a mobile menu here */
+	/* For example, when .menu-toggle is clicked, a mobile-nav class is added to header-nav */
 }

@@ -34,9 +34,9 @@ const userSchema = new mongoose.Schema({
 		default: 'staff',
 	},
 
-	isAvailable: {
+	deleted: {
 		type: Boolean,
-		default: true,
+		default: false,
 	}
 
 }, { timestamps: true });

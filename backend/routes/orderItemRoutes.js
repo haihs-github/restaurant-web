@@ -1,21 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const orderItemController = require('../controllers/orderItemController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { verifyToken, isAdmin } = require('../middlewares/auth');
 
-// POST /api/orders/:orderId/items 
+// GET /api/orderItems/
+// lấy danh sách tất cả món của đơn 
+// private
+router.get('/:orderId', verifyToken, orderItemController.getItemFromOrder);
+
+// POST /api/orderItems 
 // thêm món vào đơn
 // private
-router.post('/:orderId/items', authMiddleware, orderItemController.addItemToOrder);
+router.post('/:orderId', verifyToken, orderItemController.addItemToOrder);
 
-// PUT /api/orders/:orderId/items/:itemId
+// PUT /api/orderItems/:itemId
 // chinh sua món trong đơn
 // private
-router.put('/:orderId/items/:itemId', orderItemController.updateOrderItem);
+router.put('/:id', verifyToken, orderItemController.updateOrderItem);
 
-// DELETE /api/orders/:orderId/items/:itemId
+// DELETE /api/orderItems/:itemId
 // xoa món trong đơn
 // private
-router.delete('/:orderId/items/:itemId', orderItemController.deleteOrderItem);
+router.delete('/orderItems/:itemId', verifyToken, orderItemController.deleteOrderItem);
 
 module.exports = router;

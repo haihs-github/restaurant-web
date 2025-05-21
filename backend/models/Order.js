@@ -22,12 +22,6 @@ const orderSchema = new Schema(
 			type: Date,
 			default: Date.now
 		},
-		orderItems: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'OrderItem'
-			}
-		],
 		customerName: {
 			type: String,
 			required: true
@@ -38,6 +32,10 @@ const orderSchema = new Schema(
 		},
 		emailCustomer: {
 			type: String,
+		},
+		deleted: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	{ timestamps: true }

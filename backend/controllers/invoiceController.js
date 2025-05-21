@@ -1,8 +1,9 @@
+const { create } = require('../models/Dish');
 const Invoice = require('../models/Invoice');
 const Order = require('../models/Order');
 
-// Tạo hóa đơn cho đơn hàng đã hoàn tất
-const createInvoice = async (req, res) => {
+//[POST] /api/invoices/ Tạo hóa đơn cho đơn hàng đã hoàn tất
+exports.createInvoice = async (req, res) => {
 	const { order_id } = req.body;
 
 	try {
@@ -24,45 +25,66 @@ const createInvoice = async (req, res) => {
 			totalAmount,
 		});
 
-		res.status(201).json({ message: '🧾 Hóa đơn được tạo thành công', invoice: newInvoice });
+		res.status(201).json({ message: 'Hóa đơn được tạo thành công', invoice: newInvoice });
 	} catch (err) {
-		res.status(500).json({ message: '❌ Lỗi tạo hóa đơn', error: err.message });
+		res.status(500).json({ message: 'Lỗi tạo hóa đơn', error: err.message });
 	}
 };
 
-// Lấy danh sách tất cả hóa đơn
-const getAllInvoices = async (req, res) => {
+//[GET] /api/invoices?page=1&limit=10 Lấy danh sách tất cả hóa đơn
+exports.getAllInvoices = async (req, res) => {
 	try {
-		const invoices = await Invoice.find().populate({
+		// phan trang
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+
+		const invoices = await Invoice.find({ deleted: false }).populate({
 			path: 'order_id',
 			populate: { path: 'table_id', select: 'name' } // lấy tên bàn nếu có
+		}).skip(skip).limit(limit).sort({ createAt: -1 });
+
+		const totalPage = Math.ceil(invoices.length / limit)
+
+		res.status(200).json({
+			message: "lấy đơn hàng thành công", invoices,
+			totalPage
 		});
-		res.json(invoices);
 	} catch (err) {
-		res.status(500).json({ message: '❌ Lỗi khi lấy danh sách hóa đơn', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi lấy danh sách hóa đơn', error: err.message });
 	}
 };
 
-// Lấy hóa đơn theo bàn cụ thể
-const getInvoicesByTable = async (req, res) => {
-	const { tableId } = req.params;
-
+//[GET] /api/invoices/:tableId?page=1&limit=10 Lấy hóa đơn theo bàn cụ thể
+exports.getInvoicesByTable = async (req, res) => {
 	try {
+		const { tableId } = req.params;
+		// phan trang
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+
+
 		// Tìm tất cả order của bàn đó
 		const orders = await Order.find({ table_id: tableId }).select('_id');
 		const orderIds = orders.map(order => order._id);
 
 		// Lấy hóa đơn liên quan đến các order của bàn đó
-		const invoices = await Invoice.find({ order_id: { $in: orderIds } }).populate('order_id');
-
-		res.json(invoices);
+		const invoices = await Invoice.find({ order_id: { $in: orderIds } }).populate('order_id')
+			.skip(skip).limit(limit).sort({ createAt: -1 });
+		const totalPage = Math.ceil(invoices.length / limit)
+		res.status(200).json({
+			message: "lấy đơn hàng thành công",
+			invoices,
+			totalPage
+		});
 	} catch (err) {
 		res.status(500).json({ message: '❌ Lỗi khi lấy hóa đơn theo bàn', error: err.message });
 	}
 };
 
-// Xem chi tiết 1 hóa đơn
-const getInvoiceById = async (req, res) => {
+//[GET] /api/invoices/:invoiceId Xem chi tiết 1 hóa đơn
+exports.getInvoiceById = async (req, res) => {
 	const { invoiceId } = req.params;
 
 	try {
@@ -82,17 +104,17 @@ const getInvoiceById = async (req, res) => {
 			return res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
 		}
 
-		res.json(invoice);
+		res.status(200).json({ message: "lấy hóa đơn thành công", invoice });
 	} catch (err) {
-		res.status(500).json({ message: '❌ Lỗi khi lấy chi tiết hóa đơn', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi lấy chi tiết hóa đơn', error: err.message });
 	}
 };
 
 
-// Cập nhật thông tin hóa đơn (ví dụ đổi trạng thái hoặc thông tin khách hàng)
-const updateInvoice = async (req, res) => {
+//[PUT] /api/invoices/:invoiceId sửa thông tin hóa đơn
+exports.updateInvoice = async (req, res) => {
 	const { invoiceId } = req.params;
-	const { status, customerName, customerPhone, emailCustomer } = req.body;
+	const { status } = req.body;
 
 	try {
 		const updatedInvoice = await Invoice.findByIdAndUpdate(
@@ -107,18 +129,21 @@ const updateInvoice = async (req, res) => {
 			return res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
 		}
 
-		res.json({ message: '📝 Cập nhật hóa đơn thành công', invoice: updatedInvoice });
+		res.status(200).json({ message: 'Cập nhật hóa đơn thành công', invoice: updatedInvoice });
 	} catch (err) {
-		res.status(500).json({ message: '❌ Lỗi khi cập nhật hóa đơn', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi cập nhật hóa đơn', error: err.message });
 	}
 };
 
-// Xóa hóa đơn
-const deleteInvoice = async (req, res) => {
+//[DELETE] /api/invoices/:invoiceId Xóa hóa đơn
+exports.deleteInvoice = async (req, res) => {
 	const { invoiceId } = req.params;
 
 	try {
-		const deletedInvoice = await Invoice.findByIdAndDelete(invoiceId);
+		const deletedInvoice = await Invoice.findByIdAndUpdate(invoiceId,
+			{ deleted: true },
+			{ new: true }
+		);
 
 		if (!deletedInvoice) {
 			return res.status(404).json({ message: 'Không tìm thấy hóa đơn để xóa' });
@@ -130,12 +155,4 @@ const deleteInvoice = async (req, res) => {
 	}
 };
 
-module.exports = {
-	createInvoice,
-	getAllInvoices,
-	getInvoicesByTable,
-	getInvoiceById,
-	updateInvoice,
-	deleteInvoice
-};
 
