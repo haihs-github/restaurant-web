@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'
 
-function RegisterPage() {
+function RegisterPage({ handleHideRegister, onUserCreated }) {
 
 	const [formData, setFormData] = useState({
 		username: '',
@@ -50,8 +50,9 @@ function RegisterPage() {
 				confirmPassword: '',
 				role: 'staff',
 			});
+			onUserCreated();
+			handleHideRegister()
 			alert('Tạo tài khoản thành công')
-			navigate('/login')
 		} catch (err) {
 			if (err.response && err.response.data && err.response.data.message) {
 				setError(err.response.data.message);
@@ -63,7 +64,6 @@ function RegisterPage() {
 
 	return (
 		<>
-			<Header />
 			<div className={styles.RegisterPageContainer}>
 				<div className={styles.signUpCard}>
 					<h2 className={styles.cardTitle}>Tạo tài khoản mới</h2>
@@ -155,11 +155,10 @@ function RegisterPage() {
 						<button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
 							Tạo tài khoản
 						</button>
+						<button onClick={handleHideRegister} type="button" className={`${styles.btn} ${styles.btnDelete}`}>
+							Hủy
+						</button>
 					</form>
-
-					<p className={styles.alreadyHaveAccount}>
-						Đăng nhập ngay <Link to="/login" className={styles.signInLink}>Sign in</Link>
-					</p>
 				</div>
 			</div>
 		</>

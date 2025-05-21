@@ -1,22 +1,28 @@
 const User = require('../models/User');
 
+
 // [GET] /api/users?page=1&limit=10 lấy toàn bộ user 
 exports.getAllUsers = async (req, res) => {
 	try {
-		// phan trang
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
-		const users = await User.find({ deleted: false }).select('-password')
-		skip(skip).limit(limit).sort(username);
-		const totalPage = Math.ceil(users.length / limit)
+		const users = await User.find({ deleted: false })
+			.select('-password')
+			.skip(skip)
+			.limit(limit)
+			.sort({ username: 1 });
 
-		res.status(200).json({ message: "lấy danh sách user thành công", users, totalPage });
+		const count = await User.countDocuments({ deleted: false });
+		const totalPage = Math.ceil(count / limit);
+
+		res.status(200).json({ message: "Lấy danh sách user thành công", users, totalPage });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi lấy danh sách người dùng', error: err.message });
 	}
 };
+
 
 // [GET] /api/users/:id lấy chi tiết 1 người dùng
 exports.getUserById = async (req, res) => {
@@ -60,7 +66,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const deleted = await User.findByIdAndUpdate(id, { delete: true }, { new: true }).select('-password');
+		const deleted = await User.findByIdAndUpdate(id, { deleted: true }).select('-password');
 		if (!deleted) {
 			return res.status(404).json({ message: 'Không tìm thấy người dùng' });
 		}

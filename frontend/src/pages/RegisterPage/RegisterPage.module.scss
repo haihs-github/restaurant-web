@@ -10,6 +10,7 @@
 	font-family: Arial, sans-serif;
 	padding: 20px;
 	box-sizing: border-box;
+
 }
 
 .signUpHeader {
@@ -33,8 +34,9 @@
 	width: 100%;
 	max-width: 400px;
 	text-align: center;
-	margin: 100px auto;
-
+	position: fixed;
+	top: 0px;
+	left: 40%;
 }
 
 .cardTitle {
@@ -137,6 +139,17 @@
 
 .btnPrimary:hover {
 	background-color: #0056b3;
+}
+
+.btnDelete {
+	background-color: red;
+	color: white;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.btnDelete:hover {
+	opacity: 0.8
 }
 
 .rememberMeContainer {

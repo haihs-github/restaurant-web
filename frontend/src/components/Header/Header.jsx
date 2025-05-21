@@ -3,13 +3,19 @@ import styles from './Header.module.scss'; // Import CSS cho component này
 import logo from '../../assets/react.svg'; // Đảm bảo đường dẫn đến logo đúng
 
 import { useState } from "react"; // sửa lại đúng tên hook
-import { Link } from "react-router-dom";
+import { useAuth } from '../../contexts/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 import Button from '../Button';
 
 function Header() {
+	const { user, logout } = useAuth()
+	const navigate = useNavigate();
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false)
+	const handleLogoutBtn = () => {
+		logout()
+	}
 
 	return (
 		<header className={styles.mainHeader}>
@@ -23,13 +29,16 @@ function Header() {
 			</nav>
 			{/* Thêm phần nút Đăng nhập/Đăng xuất */}
 			<div className={styles.userActions}> {/* Áp dụng CSS Module cho div này */}
-				{isLoggedIn ? (
+				{user ? (
 					// Nếu đã đăng nhập, hiển thị nút Đăng xuất
-					<Button content="đăng xuất" backgroundColor="red" color="#fff" />
+					<>
+						<Button content={user.username} />
+						<div onClick={handleLogoutBtn} ><Button content="đăng xuất" backgroundColor="red" color="#fff" /></div>
+
+					</>
 				) : (
 					// Nếu chưa đăng nhập, hiển thị nút Đăng nhập
-					<Button content="đăng nhập" backgroundColor="#00d8ff" color="#fff" />
-
+					<Link to="/login"><Button content="đăng nhập" backgroundColor="#00d8ff" color="#fff" /></Link>
 				)}
 			</div>
 		</header>
