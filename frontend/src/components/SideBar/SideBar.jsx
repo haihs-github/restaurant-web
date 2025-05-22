@@ -23,7 +23,7 @@ const Sidebar = () => {
 			<nav className={styles.mainNav}>
 				<ul>
 					<li className={styles.navItem}>
-						<Link to="/usermanage">
+						<Link to="/users">
 							<FaUsers className={styles.navIcon} />
 							<span>User</span>
 						</Link>

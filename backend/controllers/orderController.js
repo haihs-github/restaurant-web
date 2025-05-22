@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Table = require('../models/Table');
 
 //[POST] /api/orders/ Tạo đơn đặt bàn mới ( admin)
 exports.createOrder = async (req, res) => {
@@ -7,13 +8,25 @@ exports.createOrder = async (req, res) => {
 		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
 		const user_id = req.user.userId; // lấy từ token
 
-		if (!table_id || !customerName || !customerPhone || !emailCustomer || !user_id) {
+		if (!table_id || !customerName || !customerPhone || !emailCustomer) {
 			return res.status(400).json("thiếu dữ liêụ khi tạo đơn đặt bàn")
+		}
+
+
+		console.log('user_id', user_id)
+
+		// Kiểm tra bàn có tồn tại và còn trống không
+		const table = await Table.findById(table_id);
+		if (!table) {
+			return res.status(404).json({ message: "Không tìm thấy bàn" });
+		}
+		if (table.status === 'booked') {
+			return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
 		}
 
 		const newOrder = await Order.create({
 			table_id,
-			user_id,
+			user_id: user_id || null,
 			customerName,
 			customerPhone,
 			emailCustomer
@@ -23,32 +36,6 @@ exports.createOrder = async (req, res) => {
 		res.status(500).json({ message: 'Lỗi khi tạo đơn đặt bàn', error: err.message });
 	}
 };
-
-//[POST] /api/client Tạo đơn đặt bàn mới (nguoi dung)
-exports.createOrderClient = async (req, res) => {
-	try {
-		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
-
-		if (!table_id || !customerName || !customerPhone || !emailCustomer || !user_id) {
-			return res.status(400).json("thiếu dữ liêụ khi tạo đơn đặt bàn")
-		}
-
-		const user = await User.findOne({ username: "admin" })
-		const user_id = user._id
-
-		const newOrder = await Order.create({
-			table_id,
-			user_id,
-			customerName,
-			customerPhone,
-			emailCustomer
-		});
-
-		res.status(200).json({ message: "đặt bàn thành công", newOrder });
-	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi tạo đơn đặt bàn', error: err.message });
-	}
-}
 
 //[GET] api/orders?page=1&limit=10 Xem danh sách đơn đặt bàn
 exports.getAllOrders = async (req, res) => {

@@ -51,7 +51,7 @@ function LoginPage() {
 			login(res.data.token); // Lưu token
 			alert('Đăng nhập thành công!');
 			if (decoded.role === "admin") {
-				navigate('/usermanage');
+				navigate('/users');
 			} else {
 				navigate('/');
 			}

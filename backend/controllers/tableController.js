@@ -3,20 +3,28 @@ const Table = require('../models/Table');
 // [GET] /api/tables?page=1&limit=10 Lấy danh sách tất cả bàn
 exports.getAllTables = async (req, res) => {
 	try {
-		// phan trang
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
+		const totalTables = await Table.countDocuments({ deleted: false }); // <-- Đếm toàn bộ
 		const tables = await Table.find({ deleted: false })
-			.skip(skip).limit(limit).sort({ tableNumber: 1 });
+			.skip(skip)
+			.limit(limit)
+			.sort({ tableNumber: 1 });
 
-		const totalPage = Math.ceil(tables.length / limit)
-		res.json({ message: "lay danh sach ban thanh cong", tables, totalPage });
+		const totalPage = Math.ceil(totalTables / limit); // <-- Tính đúng tổng số trang
+
+		res.json({
+			message: "Lấy danh sách bàn thành công",
+			tables,
+			totalPage,
+		});
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi lấy danh sách bàn' });
 	}
 };
+
 
 // [POST] Thêm bàn mới
 exports.createTable = async (req, res) => {

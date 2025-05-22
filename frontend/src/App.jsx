@@ -6,6 +6,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import UserPage from "./pages/UserPage";
 import DishesPage from "./pages/DishesPage";
 import TablesPage from "./pages/TablesPage/TablesPage";
+import OrdersPage from "./pages/OrdersPage";
 
 function App() {
   return (
@@ -16,12 +17,14 @@ function App() {
             <HomePage />
           } />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/usermanage" element={
+          <Route path="/users" element={
             <ProtectedRoute requiredRole={"admin"}><UserPage /></ProtectedRoute>} />
           <Route path="/dishes" element={
             <ProtectedRoute requiredRole={"admin"}><DishesPage /></ProtectedRoute>} />
           <Route path="/tables" element={
             <ProtectedRoute requiredRole={"admin"}><TablesPage /></ProtectedRoute>} />
+          <Route path="/orders" element={
+            <ProtectedRoute ><OrdersPage /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider >
