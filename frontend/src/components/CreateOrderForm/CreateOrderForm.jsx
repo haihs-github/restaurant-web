@@ -17,14 +17,7 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 	useEffect(() => {
 		const fetchTables = async () => {
 			try {
-				const res = await axios.get('http://localhost:5000/api/tables',
-					{
-						headers: {
-							'Content-Type': 'multipart/form-data',
-							Authorization: `Bearer ${localStorage.getItem('token')}`,
-						},
-					}
-				);
+				const res = await axios.get('http://localhost:5000/api/tables');
 				const availableTables = (res.data.tables || []).filter(
 					(table) => table.status === 'available'
 				);
@@ -50,11 +43,7 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 		const token = localStorage.getItem('token');
 		console.log('Form data', formData)
 		try {
-			const response = await axios.post('http://localhost:5000/api/orders', formData, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const response = await axios.post('http://localhost:5000/api/orders', formData);
 			setFormData({
 				table_id: '',
 				customerName: '',

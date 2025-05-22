@@ -6,7 +6,7 @@ const { verifyToken, isAdmin } = require('../middlewares/auth');
 // Tạo đơn hàng mới (admin)
 // POST /api/orders/
 // private
-router.post('/', verifyToken, isAdmin, orderController.createOrder);
+router.post('/', orderController.createOrder);
 
 // // Tạo đơn hàng mới (kh)
 // // POST /api/orders/client
@@ -28,5 +28,10 @@ router.get('/:orderId', verifyToken, isAdmin, orderController.getOrderDetail);
 // private
 
 router.put('/:orderId', verifyToken, isAdmin, orderController.updateOrder);
+
+//xoa đơn hàng 
+// DELETE /api/orders/:orderId
+// private
+router.delete('/:orderId', verifyToken, isAdmin, orderController.deleteOrderById);
 
 module.exports = router;

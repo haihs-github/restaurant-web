@@ -66,7 +66,6 @@ const OrdersPage = () => {
 	}
 
 	const handleDeleteBtn = async (id) => {
-		console.log(id)
 		if (!window.confirm("Bạn có chắc chắn muốn xóa Đơn hàng này?")) return;
 		alert("Dữ liệu đang được xử lý");
 		try {
@@ -76,7 +75,6 @@ const OrdersPage = () => {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			});
-
 			alert("Xóa thành công");
 			console.log(res.data);
 			// Sau khi xóa, gọi lại hàm load danh sách
@@ -111,6 +109,7 @@ const OrdersPage = () => {
 									<td>SĐT</td>
 									<td>email</td>
 									<td>bàn đặt</td>
+									<td>trạng thái</td>
 									<td>Nhân viên hỗ trợ </td>
 									<td>Thao tác</td>
 								</tr>
@@ -127,9 +126,10 @@ const OrdersPage = () => {
 											{order.emailCustomer}
 										</td>
 										<td>
-											{order.table_id}
+											#{order.table_id.tableNumber}
 										</td>
-										<td>{order.user_id}</td>
+										<td>{order.status}</td>
+										<td>{order.user_id?.username || "người dùng tự tạo"}</td>
 										<td>
 											<button className={styles.editButton} onClick={() => { handleShowUpdate(order._id) }}>Sửa</button>
 											<button className={styles.deleteButton} onClick={() => handleDeleteBtn(order._id)}>Xóa</button>
