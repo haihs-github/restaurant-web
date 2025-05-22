@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import { AuthProvider } from "./contexts/AuthContext";
 import UserPage from "./pages/UserPage";
 import DishesPage from "./pages/DishesPage";
+import TablesPage from "./pages/TablesPage/TablesPage";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
             <ProtectedRoute requiredRole={"admin"}><UserPage /></ProtectedRoute>} />
           <Route path="/dishes" element={
             <ProtectedRoute requiredRole={"admin"}><DishesPage /></ProtectedRoute>} />
+          <Route path="/tables" element={
+            <ProtectedRoute requiredRole={"admin"}><TablesPage /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider >

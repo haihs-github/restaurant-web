@@ -26,14 +26,12 @@ const Sidebar = () => {
 						<Link to="/usermanage">
 							<FaUsers className={styles.navIcon} />
 							<span>User</span>
-							<span className={styles.navBadge}>253</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link to="/dishes">
 							<FaLock className={styles.navIcon} />
 							<span>Dishes</span>
-							<span className={styles.navBadge}>253</span>
 
 						</Link>
 					</li>
@@ -41,21 +39,18 @@ const Sidebar = () => {
 						<Link to="/tables">
 							<FaUsers className={styles.navIcon} />
 							<span>Tables</span>
-							<span className={styles.navBadge}>253</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link to="/orders">
 							<FaUserFriends className={styles.navIcon} />
 							<span>Orders</span>
-							<span className={styles.navBadge}>22</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link href="/invoices">
 							<FaRegFileAlt className={styles.navIcon} />
 							<span>Invoices</span>
-							<span className={styles.navBadge}>253</span>
 
 						</Link>
 					</li>

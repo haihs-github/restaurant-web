@@ -7,8 +7,8 @@ const { verifyToken, isAdmin } = require('../middlewares/auth');
 
 //GET /api/tables/
 //xem tat ca ban
-//public
-router.get('', verifyToken, isAdmin, tableController.getAllTables);
+//private
+router.get('', verifyToken, tableController.getAllTables);
 
 //POST /api/tables/
 //them 1 ban moi 
@@ -19,6 +19,11 @@ router.post('', verifyToken, isAdmin, tableController.createTable);
 //sua 1 ban 
 //private
 router.put('/:id', verifyToken, isAdmin, tableController.updateTable);
+
+//GET /api/tables/:id
+//xem ban theo id
+//private
+router.get('/:id', verifyToken, isAdmin, tableController.getTableById);
 
 //DELETE /api/tables/:id
 //xoa 1 ban 

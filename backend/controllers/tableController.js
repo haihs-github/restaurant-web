@@ -9,7 +9,7 @@ exports.getAllTables = async (req, res) => {
 		const skip = (page - 1) * limit;
 
 		const tables = await Table.find({ deleted: false })
-			.skip(skip).limit(limit).sort({ tableNumber: -1 });
+			.skip(skip).limit(limit).sort({ tableNumber: 1 });
 
 		const totalPage = Math.ceil(tables.length / limit)
 		res.json({ message: "lay danh sach ban thanh cong", tables, totalPage });
@@ -47,28 +47,37 @@ exports.updateTable = async (req, res) => {
 	const { tableNumber, capacity, status } = req.body;
 
 	try {
-
 		if (!tableNumber || !capacity || !status) {
-			return res.status(400).json({ message: "Thiếu thông tin khi sửa bàn" })
+			return res.status(400).json({ message: "Thiếu thông tin khi sửa bàn" });
 		}
 
-		const existing = await Table.findOne({ tableNumber, deleted: false });
-		console.log('existing', existing)
+		const existing = await Table.findOne({
+			tableNumber,
+			deleted: false,
+			_id: { $ne: id }, // khác id hiện tại
+		});
+
 		if (existing) {
 			return res.status(400).json({ message: 'Số bàn đã tồn tại' });
 		}
 
-		const newTable = new Table({ tableNumber, capacity, status });
+		const updatedTable = await Table.findByIdAndUpdate(
+			id,
+			{ tableNumber, capacity, status },
+			{ new: true }
+		);
 
-		const updatedTable = await Table.findByIdAndUpdate(id, newTable, { new: true });
 		if (!updatedTable) {
 			return res.status(404).json({ message: 'Không tìm thấy bàn' });
 		}
-		res.status(200).json({ message: "bàn đã cập nhật thành công", updatedTable });
+
+		res.status(200).json({ message: "Bàn đã cập nhật thành công", updatedTable });
 	} catch (err) {
+		console.error('Lỗi khi cập nhật bàn:', err);
 		res.status(500).json({ message: 'Lỗi khi cập nhật bàn' });
 	}
 };
+
 
 // [DELETE] Xóa bàn
 exports.deleteTable = async (req, res) => {
@@ -83,5 +92,22 @@ exports.deleteTable = async (req, res) => {
 		res.status(200).json({ message: 'Xóa bàn thành công' });
 	} catch (err) {
 		res.status(500).json({ message: 'Lỗi khi xóa bàn' });
+	}
+};
+
+//GET /api/tables/;id
+//xem tat ca ban
+//private
+
+exports.getTableById = async (req, res) => {
+	const id = req.params.id
+	try {
+
+		const table = await Table.findOne({ _id: id, deleted: false })
+
+
+		res.json({ message: "lay ban thanh cong", table });
+	} catch (err) {
+		res.status(500).json({ message: 'Lỗi khi lấy danh sách bàn' });
 	}
 };

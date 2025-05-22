@@ -85,135 +85,131 @@ const AddDishForm = ({ onClose, categories, fetchDishes }) => {
 	};
 
 	return (
-		<>
-			<div>Loading...</div>
-			<div className={styles.modalOverlay}>
-				<div className={styles.modalContent}>
-					<div className={styles.modalHeader}>
-						<h2 className={styles.modalTitle}>Thêm món ăn</h2>
-						<button className={styles.closeButton} onClick={onClose}><FaTimes /></button>
+		<div className={styles.modalOverlay}>
+			<div className={styles.modalContent}>
+				<div className={styles.modalHeader}>
+					<h2 className={styles.modalTitle}>Thêm món ăn</h2>
+					<button className={styles.closeButton} onClick={onClose}><FaTimes /></button>
+				</div>
+
+				<div className={styles.modalBody}>
+					<div className={styles.leftPanel}>
+						<div className={styles.dropZone}>
+							{previewImage ? (
+								<div className={styles.imagePreviewContainer}>
+									<img src={previewImage} alt="Preview" className={styles.imagePreview} />
+									<button className={styles.removeImageButton} onClick={handleRemoveImage}><FaTimes /></button>
+								</div>
+							) : (
+								<>
+									<FaCloudUploadAlt className={styles.uploadIcon} />
+									<p className={styles.dropText}>Thêm ảnh món ăn</p>
+									<p className={styles.browseText}>
+										hoặc <span className={styles.browseLink} onClick={handleBrowseClick}>chọn từ máy</span>
+									</p>
+								</>
+							)}
+							<input
+								type="file"
+								id="fileInput"
+								style={{ display: 'none' }}
+								onChange={handleFileChange}
+								accept="image/*"
+							/>
+						</div>
 					</div>
 
-					<div className={styles.modalBody}>
-						<div className={styles.leftPanel}>
-							<div className={styles.dropZone}>
-								{previewImage ? (
-									<div className={styles.imagePreviewContainer}>
-										<img src={previewImage} alt="Preview" className={styles.imagePreview} />
-										<button className={styles.removeImageButton} onClick={handleRemoveImage}><FaTimes /></button>
-									</div>
-								) : (
-									<>
-										<FaCloudUploadAlt className={styles.uploadIcon} />
-										<p className={styles.dropText}>Thêm ảnh món ăn</p>
-										<p className={styles.browseText}>
-											hoặc <span className={styles.browseLink} onClick={handleBrowseClick}>chọn từ máy</span>
-										</p>
-									</>
-								)}
-								<input
-									type="file"
-									id="fileInput"
-									style={{ display: 'none' }}
-									onChange={handleFileChange}
-									accept="image/*"
-								/>
-							</div>
+					<div className={styles.rightPanel}>
+						<div className={styles.tabs}>
+							<button
+								className={`${styles.tabButton} ${activeTab === 'options' ? styles.active : ''}`}
+								onClick={() => setActiveTab('options')}
+							>
+								Mô tả món ăn
+							</button>
 						</div>
 
-						<div className={styles.rightPanel}>
-							<div className={styles.tabs}>
-								<button
-									className={`${styles.tabButton} ${activeTab === 'options' ? styles.active : ''}`}
-									onClick={() => setActiveTab('options')}
-								>
-									Mô tả món ăn
-								</button>
-							</div>
-
-							{activeTab === 'options' && (
-								<div className={styles.tabContent}>
-									<div className={styles.formGroup}>
-										<label htmlFor="dishName" className={styles.formLabel}>Tên món ăn</label>
-										<div className={styles.inputWrapper}>
-											<input
-												type="text"
-												id="dishName"
-												className={styles.formInput}
-												value={dishName}
-												onChange={(e) => setDishName(e.target.value)}
-												placeholder="Nhập tên món ăn"
-												required
-											/>
-										</div>
-									</div>
-
-									<div className={styles.formGroup}>
-										<label htmlFor="dishPrice" className={styles.formLabel}>Giá</label>
-										<div className={styles.inputWrapper}>
-											<input
-												type="number"
-												id="dishPrice"
-												className={styles.formInput}
-												value={dishPrice}
-												onChange={(e) => setDishPrice(e.target.value)}
-												placeholder="Nhập giá"
-												required
-											/>
-										</div>
-									</div>
-
-									<div className={styles.formGroup}>
-										<label htmlFor="dishDescription" className={styles.formLabel}>Mô tả</label>
-										<div className={styles.inputWrapper}>
-											<textarea
-												id="dishDescription"
-												className={styles.formTextarea}
-												value={dishDescription}
-												onChange={(e) => setDishDescription(e.target.value)}
-												placeholder="Mô tả chi tiết món ăn..."
-												rows="4"
-												required
-											></textarea>
-										</div>
-									</div>
-
-									<div className={styles.formRow}>
-										<div className={`${styles.formGroup} ${styles.fullWidth}`}>
-											<label htmlFor="category" className={styles.formLabel}>Danh mục</label>
-											<input
-												list="categoryOptions"
-												id="category"
-												className={styles.formSelect}
-												value={category}
-												onChange={(e) => setCategory(e.target.value)}
-												placeholder="Chọn hoặc nhập danh mục"
-												required
-											/>
-											<datalist id="categoryOptions">
-												{categories.map(cat => (
-													<option key={cat._id} value={cat.name} />
-												))}
-											</datalist>
-										</div>
+						{activeTab === 'options' && (
+							<div className={styles.tabContent}>
+								<div className={styles.formGroup}>
+									<label htmlFor="dishName" className={styles.formLabel}>Tên món ăn</label>
+									<div className={styles.inputWrapper}>
+										<input
+											type="text"
+											id="dishName"
+											className={styles.formInput}
+											value={dishName}
+											onChange={(e) => setDishName(e.target.value)}
+											placeholder="Nhập tên món ăn"
+											required
+										/>
 									</div>
 								</div>
-							)}
 
-							<div className={styles.formActions}>
-								<button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleAddDish}>
-									Thêm món ăn
-								</button>
-								<button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleCancel}>
-									Hủy
-								</button>
+								<div className={styles.formGroup}>
+									<label htmlFor="dishPrice" className={styles.formLabel}>Giá</label>
+									<div className={styles.inputWrapper}>
+										<input
+											type="number"
+											id="dishPrice"
+											className={styles.formInput}
+											value={dishPrice}
+											onChange={(e) => setDishPrice(e.target.value)}
+											placeholder="Nhập giá"
+											required
+										/>
+									</div>
+								</div>
+
+								<div className={styles.formGroup}>
+									<label htmlFor="dishDescription" className={styles.formLabel}>Mô tả</label>
+									<div className={styles.inputWrapper}>
+										<textarea
+											id="dishDescription"
+											className={styles.formTextarea}
+											value={dishDescription}
+											onChange={(e) => setDishDescription(e.target.value)}
+											placeholder="Mô tả chi tiết món ăn..."
+											rows="4"
+											required
+										></textarea>
+									</div>
+								</div>
+
+								<div className={styles.formRow}>
+									<div className={`${styles.formGroup} ${styles.fullWidth}`}>
+										<label htmlFor="category" className={styles.formLabel}>Danh mục</label>
+										<input
+											list="categoryOptions"
+											id="category"
+											className={styles.formSelect}
+											value={category}
+											onChange={(e) => setCategory(e.target.value)}
+											placeholder="Chọn hoặc nhập danh mục"
+											required
+										/>
+										<datalist id="categoryOptions">
+											{categories.map(cat => (
+												<option key={cat._id} value={cat.name} />
+											))}
+										</datalist>
+									</div>
+								</div>
 							</div>
+						)}
+
+						<div className={styles.formActions}>
+							<button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleAddDish}>
+								Thêm món ăn
+							</button>
+							<button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleCancel}>
+								Hủy
+							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</>
-
+		</div>
 	);
 };
 
