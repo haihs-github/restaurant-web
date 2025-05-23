@@ -181,7 +181,7 @@ function UpdateOrderForm({ id, handleHideUpdate, onOrderUpdate, fetchOrders }) {
 						</select>
 					</div>
 
-					<button type="submit" onClick={onOrderUpdate} className={`${styles.btn} ${styles.btnPrimary}`}>
+					<button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
 						Cập nhật
 					</button>
 					<button onClick={handleHideUpdate} type="button" className={`${styles.btn} ${styles.btnDelete}`}>

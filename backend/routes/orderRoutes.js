@@ -10,23 +10,24 @@ router.post('/', orderController.createOrder);
 
 // Xem tất cả đơn hàng
 // GET /api/orders/
-router.get('/', verifyToken, isAdmin, orderController.getAllOrders);
+router.get('/', orderController.getAllOrders);
 
 // xem chi tiết đơn hàng
 // GET /api/orders/:orderId
 // private
-router.get('/:orderId', verifyToken, isAdmin, orderController.getOrderDetail);
+router.get('/:orderId', verifyToken, orderController.getOrderDetail);
 
 
 //cập nhật đơn hàng 
 // PUT /api/orders/:orderId
 // private
 
-router.put('/:orderId', verifyToken, isAdmin, orderController.updateOrder);
+router.put('/:orderId', verifyToken, orderController.updateOrder);
+router.put('/doneOrder/:orderId', verifyToken, orderController.doneOrder);
 
 //xoa đơn hàng 
 // DELETE /api/orders/:orderId
 // private
-router.delete('/:orderId', verifyToken, isAdmin, orderController.deleteOrderById);
+router.delete('/:orderId', verifyToken, orderController.deleteOrderById);
 
 module.exports = router;

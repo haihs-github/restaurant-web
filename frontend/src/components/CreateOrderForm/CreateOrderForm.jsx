@@ -56,6 +56,7 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 			console.log('response', response)
 			setMessage(response.data.message);
 			handleHideRegister();
+			onOrderCreated()
 			alert('Tạo đơn đặt bàn thành công');
 		} catch (err) {
 			if (err.response && err.response.data && err.response.data.message) {

@@ -4,43 +4,64 @@ import Sidebar from '../../components/SideBar';
 import Header from '../../components/Header';
 import { FaPlus } from 'react-icons/fa';
 import CreateOrderForm from '../../components/CreateOrderForm';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react'; // Import useCallback
 import axios from 'axios';
 import UpdateOrderForm from '../../components/UpdateOrderForm';
 import InvoiceOverlay from '../../components/InvoiceOverlay'
 
 
 const OrdersPage = () => {
-	// const [currentPage, setCurrentPage] = useState(1);
 	const [showForm, setShowForm] = useState(false)
 	const [showUpdateForm, setShowUpdateForm] = useState(false)
-	const [orders, setOrder] = useState([]);
+	const [allOrders, setAllOrders] = useState([]); // Giữ tất cả các đơn hàng gốc
+	const [displayedOrders, setDisplayedOrders] = useState([]); // Các đơn hàng hiển thị sau khi lọc/tìm kiếm
 	const [page, setPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(1);
 	const [userCreated, setUserCreated] = useState(false)
-	const [userUpdate, setOrderUpdate] = useState(false)
+	const [orderUpdate, setOrderUpdate] = useState(false)
 	const [selectedOrder, setSelectedOrder] = useState(null);
 	const [showItems, setShowItems] = useState(false)
 	const [searchTerm, setSearchTerm] = useState('');
 	const [filterStatus, setFilterStatus] = useState('');
 
-	const fetchOrders = async () => {
+	// Sử dụng useCallback để hàm fetchOrders không bị tạo lại không cần thiết
+	const fetchOrders = useCallback(async () => {
 		try {
 			const res = await axios.get(`http://localhost:5000/api/orders?page=${page}&limit=10`, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			});
-			setOrder(res.data.orders);
+			setAllOrders(res.data.orders); // Cập nhật tất cả đơn hàng
+			setDisplayedOrders(res.data.orders); // Ban đầu hiển thị tất cả
 			setTotalPage(res.data.totalPage);
 		} catch (err) {
 			console.error('Lỗi khi lấy users:', err);
 		}
-	};
-	useEffect(() => {
+	}, [page]); // Chỉ phụ thuộc vào page
 
+	useEffect(() => {
 		fetchOrders();
-	}, [page, userCreated]);
+	}, [page, userCreated, orderUpdate, fetchOrders]); // Thêm fetchOrders vào dependency array
+
+	// Effect để xử lý tìm kiếm và lọc khi searchTerm hoặc filterStatus thay đổi
+	useEffect(() => {
+		let filteredAndSearchedOrders = allOrders;
+
+		// Lọc theo trạng thái
+		if (filterStatus !== '') {
+			filteredAndSearchedOrders = filteredAndSearchedOrders.filter(order => order.status === filterStatus);
+		}
+
+		// Tìm kiếm theo tên khách hàng
+		if (searchTerm) {
+			filteredAndSearchedOrders = filteredAndSearchedOrders.filter(order =>
+				order.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+		}
+
+		setDisplayedOrders(filteredAndSearchedOrders);
+	}, [searchTerm, filterStatus, allOrders]); // Phụ thuộc vào searchTerm, filterStatus và allOrders
 
 	const handleAddOrder = () => {
 		setShowForm(true)
@@ -52,7 +73,7 @@ const OrdersPage = () => {
 
 	const onUserCreated = () => {
 		setUserCreated(prev => !prev); // toggle để kích hoạt useEffect
-		setShowForm(false);    // ẩn form sau khi thêm
+		setShowForm(false);     // ẩn form sau khi thêm
 	}
 
 	const handleShowUpdate = (id) => {
@@ -66,14 +87,13 @@ const OrdersPage = () => {
 
 	const onOrderUpdate = () => {
 		setOrderUpdate(prev => !prev); // toggle để kích hoạt useEffect
-		setShowForm(false);    // ẩn form sau khi thêm
+		setShowUpdateForm(false);     // ẩn form sau khi cập nhật
 	}
 
 	const handleDeleteBtn = async (id) => {
 		if (!window.confirm("Bạn có chắc chắn muốn xóa Đơn hàng này?")) return;
 		alert("Dữ liệu đang được xử lý");
 		try {
-			const token = localStorage.getItem("token"); // hoặc lấy từ context nếu bạn dùng AuthContext
 			const res = await axios.delete(`http://localhost:5000/api/orders/${id}`, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -81,8 +101,7 @@ const OrdersPage = () => {
 			});
 			alert("Xóa thành công");
 			console.log(res.data);
-			// Sau khi xóa, gọi lại hàm load danh sách
-			fetchOrders(); // ví dụ hàm để load lại danh sách
+			fetchOrders(); // Tải lại danh sách
 		} catch (err) {
 			console.error("Lỗi khi xóa:", err.response?.data || err.message);
 			alert("Xóa thất bại");
@@ -100,7 +119,6 @@ const OrdersPage = () => {
 
 	return (
 		<div className={styles.dashboardLayout}>
-			{/* Nếu muốn header nằm ngoài layout chính thì đặt ở đây */}
 			<Header />
 
 			<div className={styles.mainContentArea}>
@@ -117,7 +135,9 @@ const OrdersPage = () => {
 						Trạng thái
 						<select
 							value={filterStatus}
-							onChange={(e) => setFilterStatus(e.target.value)}
+							onChange={(e) => {
+								setFilterStatus(e.target.value); // Chỉ cập nhật filterStatus
+							}}
 							className={styles.selectFilter}
 						>
 							<option value="">Tất cả trạng thái</option>
@@ -126,6 +146,7 @@ const OrdersPage = () => {
 							<option value="completed">Hoàn thành</option>
 							<option value="cancelled">Đã hủy</option>
 						</select>
+
 					</div>
 
 
@@ -151,11 +172,7 @@ const OrdersPage = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{orders
-									.filter(order =>
-										order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-										(filterStatus === '' || order.status === filterStatus)
-									)
+								{displayedOrders
 									.map((order, index) => (
 										<tr key={order._id}>
 											<td>{++index}</td>

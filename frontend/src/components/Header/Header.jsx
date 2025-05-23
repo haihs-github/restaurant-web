@@ -37,7 +37,8 @@ function Header() {
 				{user ? (
 					// Nếu đã đăng nhập, hiển thị nút Đăng xuất
 					<>
-						<Button content={user.username} />
+
+						<div onClick={() => { navigate('/users') }} ><Button content={user.username} /></div>
 						<div onClick={handleLogoutBtn} ><Button content="đăng xuất" backgroundColor="red" color="#fff" /></div>
 					</>
 				) : (

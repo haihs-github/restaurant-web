@@ -96,10 +96,10 @@ exports.updateOrder = async (req, res) => {
 			return res.status(400).json({ message: "Thiếu thông tin khi sửa đơn hàng" });
 		}
 
-		const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
-		if (exsitingOrder) {
-			return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
-		}
+		// const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
+		// if (exsitingOrder) {
+		// 	return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
+		// }
 
 		const updatedOrder = await Order.findByIdAndUpdate(
 			orderId,
@@ -109,7 +109,6 @@ exports.updateOrder = async (req, res) => {
 				customerName,
 				customerPhone,
 				emailCustomer,
-				user_id,
 				orderTime
 			},
 			{ new: true, runValidators: true }
@@ -120,7 +119,40 @@ exports.updateOrder = async (req, res) => {
 		}
 		res.json({ message: "Cập nhật đơn hàng thành công", updatedOrder });
 	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err.message });
+		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err });
+	}
+};
+
+//[PUT] /api/orders/done/:orderId danh dau complted( admin)
+exports.doneOrder = async (req, res) => {
+	try {
+		const { orderId } = req.params;
+		const orderItems = req.body.orderItems
+		console.log(orderItems)
+		let saveOrder = []
+		let totalAmount = 0
+		for (const item of orderItems) {
+			totalAmount += item.price * item.quantity
+			saveOrder.push({ dish_id: item.dish_id, price: item.price, quantity: item.quantity })
+		}
+
+
+		const updatedOrder = await Order.findByIdAndUpdate(
+			orderId,
+			{
+				status: 'completed',
+				orderItems: saveOrder,
+				totalAmount: totalAmount
+			},
+			{ new: true, runValidators: true }
+		);
+
+		if (!updatedOrder) {
+			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
+		}
+		res.json({ message: "Cập nhật đơn hàng thành công", updatedOrder });
+	} catch (err) {
+		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err });
 	}
 };
 

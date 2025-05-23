@@ -11,7 +11,7 @@ const ClientOrder = () => {
 	const [selectedCategory, setSelectedCategory] = useState('all'); // 'all', 'food', 'drinks'
 	const [orders, setOrders] = useState([]);
 	const [orderItems, setOrderItems] = useState([]);
-	const [selectedTable, setSelectedTable] = useState('Bàn 1'); // Placeholder for table selection
+	const [selectedOrder, setSelectedOrder] = useState(null); // Placeholder for table selection
 
 	const [dishes, setDishes] = useState([]);
 	const [page, setPage] = useState(1);
@@ -22,7 +22,7 @@ const ClientOrder = () => {
 	useEffect(() => {
 		const fetchDishes = async () => {
 			try {
-				const res = await axios.get(`http://localhost:5000/api/dishes?page=${page}&limit=10`);
+				const res = await axios.get(`http://localhost:5000/api/dishes`);
 				setDishes(res.data.dishes);
 				setTotalPage(res.data.totalPage);
 			} catch (err) {
@@ -36,12 +36,14 @@ const ClientOrder = () => {
 	useEffect(() => {
 		const fetchOrders = async () => {
 			try {
-				const res = await axios.get(`http://localhost:5000/api/orders`, {
+				const res = await axios.get(`http://localhost:5000/api/orders?page=1&limit=10?`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
 				});
+				console.log('res.data.orders', res.data)
 				setOrders(res.data.orders);
+				setSelectedOrder(res.data.orders[0]);
 			} catch (err) {
 				console.error('Lỗi khi lấy order:', err);
 			}
@@ -68,22 +70,33 @@ const ClientOrder = () => {
 		setSelectedCategory(category);
 	};
 
+
 	const handleAddOrderItem = (dish) => {
 		setOrderItems((prevItems) => {
-			const existingItem = prevItems.find((item) => item.id === dish.id);
+			const existingItem = prevItems.find((item) => item._id === dish._id);
 			if (existingItem) {
 				return prevItems.map((item) =>
-					item.id === dish.id ? { ...item, quantity: item.quantity + 1 } : item
+					item._id === dish._id
+						? { ...item, quantity: item.quantity + 1 }
+						: item
 				);
 			} else {
-				return [...prevItems, { ...dish, quantity: 1 }];
+				return [
+					...prevItems,
+					{
+						...dish,
+						quantity: 1,
+						dish_id: dish._id, // 👈 Thêm dòng này
+					},
+				];
 			}
 		});
 	};
 
+
 	const handleRemoveOrderItem = (dishId) => {
 		setOrderItems((prevItems) =>
-			prevItems.filter((item) => item.id !== dishId)
+			prevItems.filter((item) => item._id !== dishId)
 		);
 	};
 
@@ -91,7 +104,7 @@ const ClientOrder = () => {
 		setOrderItems((prevItems) =>
 			prevItems
 				.map((item) =>
-					item.id === dishId ? { ...item, quantity: newQuantity } : item
+					item._id === dishId ? { ...item, quantity: newQuantity } : item
 				)
 				.filter((item) => item.quantity > 0) // Loại bỏ nếu số lượng về 0
 		);
@@ -121,10 +134,10 @@ const ClientOrder = () => {
 					orders={orders}
 					orderItems={orderItems}
 					onRemoveOrderItem={handleRemoveOrderItem}
-					onQuantityChange={handleQuantityChange}
+					handleQuantityChange={handleQuantityChange}
 					total={calculateTotal()}
-					selectedTable={selectedTable}
-					setSelectedTable={setSelectedTable}
+					selectedOrder={selectedOrder}
+					setSelectedOrder={setSelectedOrder}
 				/>
 			</div>
 		</div>
