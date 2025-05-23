@@ -1,25 +1,34 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Table = require('../models/Table');
+const Dish = require('../models/Dish');
+const OrderItem = require('../models/OrderItem')
 
 //[POST] /api/orders/ Tạo đơn đặt bàn mới ( admin)
 exports.createOrder = async (req, res) => {
 	try {
-		const { table_id, customerName, customerPhone, emailCustomer } = req.body;
+		const { table_id, customerName, customerPhone, emailCustomer, orderItems, orderTime } = req.body;
 		const user_id = req.user?.userId || null; // nếu có middleware xác thực
 
-		if (!table_id || !customerName || !customerPhone || !emailCustomer) {
+		if (!table_id || !customerName || !customerPhone || !emailCustomer || !orderTime) {
+			console.log(table_id, customerName, customerPhone, emailCustomer, orderTime)
+			console.log("thieu du lieu")
 			return res.status(400).json({ message: "Thiếu dữ liệu khi tạo đơn đặt bàn" });
 		}
 
-		// Kiểm tra bàn
-		const table = await Table.findById(table_id);
-		if (!table) {
-			return res.status(404).json({ message: "Không tìm thấy bàn" });
-		}
-		if (table.status === 'booked') {
+		const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
+		if (exsitingOrder) {
+			console.log("ban da dat")
 			return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
 		}
+		// if (!table) {
+		// 	return res.status(404).json({ message: "Không tìm thấy bàn" });
+		// }
+		// if (table.status === 'booked') {
+		// 	return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
+		// }
+
+		let totalAmount = 0;
 
 		// Tạo đơn đặt bàn
 		const newOrder = await Order.create({
@@ -28,13 +37,32 @@ exports.createOrder = async (req, res) => {
 			customerName,
 			customerPhone,
 			emailCustomer,
-			status: 'pending',
-			orderedAt: new Date()
+			orderTime
 		});
 
-		// Cập nhật trạng thái bàn
-		table.status = 'booked';
-		await table.save();
+		// Tạo orderItems nếu có
+		if (orderItems && orderItems.length > 0) {
+			for (const item of orderItems) {
+				console.log('item', item);
+				const dish = await Dish.findOne({ name: item.name, deleted: false });
+				if (!dish) {
+					return res.status(400).json({ message: `Không tìm thấy món: ${item.name}` });
+				}
+
+				const orderItem = new OrderItem({
+					order_id: newOrder._id,
+					dish_id: dish._id,
+					price: item.price,
+					quantity: item.quantity,
+				});
+				await orderItem.save();
+
+				totalAmount += item.price * item.quantity;
+			}
+		}
+
+		// Cập nhật tổng tiền
+		newOrder.totalAmount = totalAmount;
 
 		res.status(200).json({
 			message: "Tạo đơn đặt bàn thành công",
@@ -46,8 +74,58 @@ exports.createOrder = async (req, res) => {
 	}
 };
 
+//[PUT] /api/orders/:id Tạo đơn đặt bàn mới ( admin)
+exports.updateOrder = async (req, res) => {
+	try {
+		const { orderId } = req.params;
+		const {
+			table_id,
+			status,
+			customerName,
+			customerPhone,
+			emailCustomer,
+			orderTime
+		} = req.body;
 
-//[GET] api/orders?page=1&limit=10 Xem danh sách đơn đặt bàn
+		const validStatuses = ['pending', 'confirmed', 'completed', 'rejected'];
+		if (status && !validStatuses.includes(status)) {
+			return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+		}
+
+		if (!orderId || !status || !customerName || !customerPhone || !emailCustomer || !orderTime) {
+			return res.status(400).json({ message: "Thiếu thông tin khi sửa đơn hàng" });
+		}
+
+		const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
+		if (exsitingOrder) {
+			return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
+		}
+
+		const updatedOrder = await Order.findByIdAndUpdate(
+			orderId,
+			{
+				table_id,
+				status,
+				customerName,
+				customerPhone,
+				emailCustomer,
+				user_id,
+				orderTime
+			},
+			{ new: true, runValidators: true }
+		);
+
+		if (!updatedOrder) {
+			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
+		}
+		res.json({ message: "Cập nhật đơn hàng thành công", updatedOrder });
+	} catch (err) {
+		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err.message });
+	}
+};
+
+
+//[GET] api/orders?page=1&limit=10?customerName=hải? Xem danh sách đơn đặt bàn
 exports.getAllOrders = async (req, res) => {
 	try {
 		// Phân trang
@@ -85,15 +163,10 @@ exports.getAllOrders = async (req, res) => {
 exports.getOrderDetail = async (req, res) => {
 	try {
 		const { orderId } = req.params;
-
+		const orderItems = await OrderItem.find({ order_id: orderId }).populate('dish_id');
 		// Lấy thông tin đơn đặt bàn + danh sách các món trong đơn
-		const order = await Order.findById(orderId).populate({
-			path: 'orderItems',
-			populate: {
-				path: 'dish_id',
-				select: 'name price description', // Lấy thông tin món ăn
-			},
-		});
+		const order = await Order.findById(orderId);
+		order.orderItems = orderItems;
 
 		if (!order) {
 			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
@@ -105,49 +178,6 @@ exports.getOrderDetail = async (req, res) => {
 	}
 };
 
-//[PUT] /api/orders/:orderId update đơn đặt bàn 
-exports.updateOrder = async (req, res) => {
-	const user_id = req.user.userId; // lấy từ token
-
-	try {
-		const { orderId } = req.params;
-		const { table_id,
-			status,
-			orderedAt,
-			customerName,
-			customerPhone,
-			emailCustomer } = req.body;
-
-		// Kiểm tra trạng thái hợp lệ
-		const validStatuses = ['pending', 'confirmed', 'served', 'completed', 'rejected'];
-		if (status && !validStatuses.includes(status)) {
-			return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
-		}
-
-		if (!orderId || !status || !orderedAt || !customerName || !customerPhone || !emailCustomer) {
-			return res.status(400).json({ message: "thiếu thông tin khi sửa đơn hàng" })
-		}
-
-		const updatedOrder = await Order.findByIdAndUpdate(
-			orderId,
-			{
-				table_id, status, orderedAt, customerName
-				, customerPhone
-				, emailCustomer,
-				user_id
-			},
-			{ new: true, runValidators: true }
-		);
-
-		if (!updatedOrder) {
-			return res.status(404).json({ message: 'Không tìm thấy đơn đặt bàn' });
-		}
-
-		res.json({ message: "Cập nhật đơn hàng thành công", updatedOrder });
-	} catch (err) {
-		res.status(500).json({ message: 'Lỗi khi cập nhật đơn đặt bàn', error: err.message });
-	}
-};
 
 //[DELETE] api/orders/:orderId Xóa đơn đặt bàn 
 exports.deleteOrderById = async (req, res) => {

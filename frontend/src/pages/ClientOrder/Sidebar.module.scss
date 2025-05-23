@@ -1,0 +1,72 @@
+.sidebar {
+	width: 200px; // Chiều rộng cố định cho sidebar
+	background-color: #fbfbfb; // Nền sáng hơn
+	border-right: 1px solid #e0e0e0;
+	padding: 20px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.tabs {
+	display: flex;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #e0e0e0;
+	padding: 0 10px;
+}
+
+.tabButton {
+	flex: 1;
+	padding: 12px 15px;
+	background-color: transparent;
+	border: none;
+	border-bottom: 2px solid transparent; // Đường kẻ dưới
+	font-size: 1rem;
+	font-weight: 500;
+	color: #777;
+	cursor: pointer;
+	transition: color 0.2s ease, border-color 0.2s ease;
+
+	&:hover {
+		color: #333;
+	}
+
+	&.active {
+		color: #007bff; // Màu xanh cho tab active
+		border-color: #007bff;
+		font-weight: 600;
+	}
+}
+
+.categoryFilter {
+	display: flex;
+	flex-direction: column;
+	padding: 0 10px;
+	gap: 5px; // Khoảng cách giữa các nút danh mục
+}
+
+.categoryButton {
+	width: 100%;
+	padding: 10px 15px;
+	background-color: transparent;
+	border: none;
+	border-radius: 5px;
+	text-align: left;
+	font-size: 0.95rem;
+	color: #555;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+
+	&:hover {
+		background-color: #e8e8e8;
+	}
+
+	&.active {
+		background-color: #007bff; // Màu xanh cho danh mục active
+		color: #fff;
+		font-weight: 600;
+
+		&:hover {
+			background-color: #0056b3;
+		}
+	}
+}

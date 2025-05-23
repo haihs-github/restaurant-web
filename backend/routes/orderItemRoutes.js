@@ -3,10 +3,10 @@ const router = express.Router();
 const orderItemController = require('../controllers/orderItemController');
 const { verifyToken, isAdmin } = require('../middlewares/auth');
 
-// GET /api/orderItems/
-// lấy danh sách tất cả món của đơn 
+// GET /api/orderItems/:id
+// lấy orderItems 
 // private
-router.get('/:orderId', verifyToken, orderItemController.getItemFromOrder);
+router.get('/:id', verifyToken, orderItemController.getOrderItem);
 
 // POST /api/orderItems 
 // thêm món vào đơn

@@ -111,9 +111,9 @@ function UpdateTableForm({ id, handleHideUpdate, onUserUpdate, fetchTables }) {
 							className={styles.formSelect}
 							required
 						>
-							<option value="">-- Chọn trạng thái --</option>
-							<option value="available">Trống</option>
-							<option value="booked">Đã đặt</option>
+							<option value="available">-- Chọn trạng thái --</option>
+							<option value="available">Đang mở</option>
+							<option value="booked">Đang đóng</option>
 						</select>
 					</div>
 

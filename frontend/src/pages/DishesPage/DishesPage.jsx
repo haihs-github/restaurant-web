@@ -29,8 +29,7 @@ const DishesPage = () => {
 
 	const fetchDishes = async () => {
 		try {
-			const res = await axios.get(`http://localhost:5000/api/dishes?page=${page}&limit=5`, {
-			});
+			const res = await axios.get(`http://localhost:5000/api/dishes?page=${page}&limit=5`);
 			setDishes(res.data.dishes);
 			setTotalPage(res.data.totalPage);
 		} catch (err) {

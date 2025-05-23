@@ -218,6 +218,24 @@
 	cursor: pointer;
 	font-size: 0.85em;
 	transition: background-color 0.2s ease;
+	margin: 2px 2px;
+
+	&:hover {
+		opacity: 0.8;
+
+	}
+}
+
+.viewButton {
+	background-color: #ffc314;
+	/* Màu đỏ cho nút Delete */
+	color: white;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 0.85em;
+	transition: background-color 0.2s ease;
 	margin: 0 2px;
 
 	&:hover {
@@ -261,4 +279,23 @@
 	&:hover {
 		background-color: #0069d9;
 	}
+}
+
+.searchContainer {}
+
+.searchInput {
+	padding: 8px;
+	width: 100%;
+	max-width: 300px;
+	font-size: 16px;
+	border-radius: 6px;
+	border: 1px solid #ccc;
+	margin-right: 10px
+}
+
+.selectFilter {
+	margin-left: 1rem;
+	padding: 0.5rem;
+	border-radius: 5px;
+	border: 1px solid #ccc;
 }

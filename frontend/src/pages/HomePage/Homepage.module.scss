@@ -1,0 +1,355 @@
+.homePageContainer {
+	font-family: Arial, sans-serif; // Hoặc font tương tự trong hình
+	background-color: #f0f0f0; // Nền nhẹ
+}
+
+.mainContent {
+	padding-top: 60px; // Header đã là sticky, nên không cần padding trên cùng của main content
+}
+
+.heroSection {
+	width: 100%;
+	overflow: hidden; // Đảm bảo ảnh không tràn ra ngoài
+}
+
+.heroBanner {
+	width: 100%;
+	display: block; // Loại bỏ khoảng trắng dưới ảnh
+	height: auto; // Duy trì tỷ lệ khung hình
+	// Nếu ảnh có chiều cao cố định, dùng object-fit: cover;
+	// max-height: 600px;
+	// object-fit: cover;
+}
+
+.offerSection {
+	padding: 20px 40px 60px; // Padding cho phần ưu đãi
+	text-align: center;
+}
+
+.offerGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); // Responsive grid
+	gap: 30px;
+	max-width: 1200px; // Giới hạn chiều rộng grid
+	margin: 0 auto; // Căn giữa grid
+}
+
+.offerCard {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 150px;
+	text-align: center;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	cursor: pointer;
+
+	&:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+	}
+}
+
+.cardTitle {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: #555;
+	margin-bottom: 10px;
+}
+
+.cardPrice {
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: #e20000; // Màu đỏ đặc trưng của Gogi
+	margin-bottom: 5px;
+
+	sup {
+		font-size: 0.5em;
+		vertical-align: super;
+	}
+
+	small {
+		font-size: 0.6em;
+		font-weight: normal;
+		color: #888;
+	}
+}
+
+.offerCardKids {
+	.freeText {
+		font-size: 2.2rem;
+		color: #28a745; // Màu xanh lá cho "FREE"
+		font-weight: bold;
+	}
+
+	.discountText {
+		font-size: 1.8rem;
+		color: #e20000; // Màu đỏ cho "-70%"
+		font-weight: bold;
+		margin-left: 10px;
+	}
+
+	.cardSubtitle {
+		font-size: 0.8rem;
+		color: #777;
+		margin-top: 5px;
+
+		small:first-child {
+			margin-right: 10px;
+		}
+	}
+}
+
+// Media Queries cho responsive (ví dụ)
+@media (max-width: 768px) {
+	.mainHeader {
+		padding: 10px 20px;
+	}
+
+	.mainNav {
+		// Có thể ẩn nav và thay bằng menu hamburger
+		display: none;
+	}
+
+	.offerSection {
+		padding: 20px 20px 40px;
+	}
+
+	.offerGrid {
+		grid-template-columns: 1fr; // Stack các card trên màn hình nhỏ
+	}
+
+	.offerCard {
+		padding: 20px;
+	}
+}
+
+
+/* --- PHẦN THÊM MỚI --- */
+
+.sectionWrapper {
+	max-width: 1000px; // Giới hạn chiều rộng nội dung các section
+	margin: 0 auto;
+	padding: 10px 20px;
+}
+
+.sectionTitle {
+	font-size: 2.2rem;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 40px;
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: -10px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 80px;
+		height: 4px;
+		background-color: #e20000; // Màu đỏ Gogi
+		border-radius: 2px;
+	}
+}
+
+.sectionDescription {
+	font-size: 1.1rem;
+	line-height: 1.8;
+	color: #555;
+	text-align: justify;
+	margin-bottom: 20px;
+}
+
+.aboutSection {
+	background-color: #f0f0f0; // Nền nhẹ khác biệt
+	padding: 60px 0;
+}
+
+.locationSection {
+	padding: 60px 0;
+	background-color: #fff;
+}
+
+.locationContent {
+	display: flex;
+	flex-direction: column; // Mặc định xếp chồng
+	gap: 30px;
+
+	@media (min-width: 768px) {
+		flex-direction: row; // Xếp cạnh nhau trên màn hình lớn
+		align-items: flex-start;
+	}
+}
+
+.addressInfo {
+	flex: 1;
+	text-align: left;
+}
+
+.addressLine {
+	font-size: 1rem;
+	line-height: 1.6;
+	color: #555;
+	margin-bottom: 10px;
+}
+
+.mapContainer {
+	flex: 2; // Bản đồ chiếm nhiều không gian hơn
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+	iframe {
+		width: 100%;
+		height: 300px; // Chiều cao cố định cho map
+		border: none;
+	}
+}
+
+.contactSection {
+	background-color: #f0f0f0;
+}
+
+.contactText {
+	font-size: 1.1rem;
+	line-height: 1.6;
+	color: #555;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.contactList {
+	list-style: none;
+	padding: 0;
+	margin: 0 auto 30px auto;
+	max-width: 600px;
+	text-align: left;
+
+	.contactItem {
+		font-size: 1.1rem;
+		color: #333;
+		margin-bottom: 15px;
+
+		a {
+			color: #e20000;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+.contactFormNote {
+	font-size: 1rem;
+	color: #555;
+	text-align: center;
+	margin-bottom: 20px;
+	font-style: italic;
+}
+
+.contactForm {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.formInput,
+.formTextarea {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 1rem;
+	color: #333;
+	box-sizing: border-box;
+
+	&:focus {
+		outline: none;
+		border-color: #e20000; // Màu đỏ Gogi
+		box-shadow: 0 0 0 3px rgba(226, 0, 0, 0.1);
+	}
+}
+
+.formTextarea {
+	resize: vertical; // Cho phép thay đổi kích thước theo chiều dọc
+	min-height: 100px;
+}
+
+.mainFooter {
+	background-color: #333;
+	color: #fff;
+	padding: 20px;
+	text-align: center;
+	font-size: 0.9rem;
+	margin-top: 50px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.sectionTitle {
+		font-size: 1.8rem;
+	}
+
+	.sectionWrapper {
+		padding: 10px 15px;
+	}
+
+	.sectionDescription,
+	.addressLine,
+	.contactText,
+	.contactItem {
+		font-size: 0.95rem;
+	}
+
+	.formInput,
+	.formTextarea {
+		padding: 10px 12px;
+	}
+}
+
+.callToAction {
+	text-align: center;
+	margin-top: 50px;
+	padding-top: 30px;
+	border-top: 1px solid #eee; // Đường kẻ phân cách nhẹ
+}
+
+.callToActionText {
+	font-size: 1.3rem;
+	color: #333;
+	margin-bottom: 25px;
+	font-weight: bold;
+}
+
+.btnBooking {
+	display: inline-block; // Để có thể áp dụng padding và margin như block nhưng vẫn căn giữa
+	background-color: #e20000; // Màu đỏ đặc trưng của Gogi
+	color: #fff;
+	padding: 15px 35px;
+	border-radius: 8px;
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-decoration: none; // Bỏ gạch chân cho link
+	transition: background-color 0.3s ease, transform 0.2s ease;
+	box-shadow: 0 4px 10px rgba(226, 0, 0, 0.3);
+
+	&:hover {
+		background-color: #c70000; // Đậm hơn khi hover
+		transform: translateY(-2px);
+		box-shadow: 0 6px 12px rgba(226, 0, 0, 0.4);
+	}
+
+	position: fixed;
+	bottom: 20px;
+	right: 40%;
+}

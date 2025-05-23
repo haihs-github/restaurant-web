@@ -14,8 +14,12 @@ const orderSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ['pending', 'confirmed', 'served', 'completed', 'rejected'],
+			enum: ['pending', 'confirmed', 'completed', 'rejected'],
 			default: 'pending'
+		},
+		orderTime: {
+			type: String,
+			required: true
 		},
 		orderedAt: {
 			type: Date,
@@ -31,6 +35,20 @@ const orderSchema = new Schema(
 		},
 		emailCustomer: {
 			type: String,
+		},
+		orderItems: [
+			{
+				dish_id: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: 'Dish',
+				},
+				price: Number,
+				quantity: Number,
+			}
+		],
+		totalAmount: {
+			type: Number,
+			default: 0
 		},
 		deleted: {
 			type: Boolean,

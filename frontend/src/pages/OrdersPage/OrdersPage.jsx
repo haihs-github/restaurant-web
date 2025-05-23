@@ -6,7 +6,8 @@ import { FaPlus } from 'react-icons/fa';
 import CreateOrderForm from '../../components/CreateOrderForm';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import UpdateUserForm from '../../components/UpdateUserForm';
+import UpdateOrderForm from '../../components/UpdateOrderForm';
+import InvoiceOverlay from '../../components/InvoiceOverlay'
 
 
 const OrdersPage = () => {
@@ -18,7 +19,10 @@ const OrdersPage = () => {
 	const [totalPage, setTotalPage] = useState(1);
 	const [userCreated, setUserCreated] = useState(false)
 	const [userUpdate, setOrderUpdate] = useState(false)
-	const [selectedUser, setSelectedOrder] = useState(null);
+	const [selectedOrder, setSelectedOrder] = useState(null);
+	const [showItems, setShowItems] = useState(false)
+	const [searchTerm, setSearchTerm] = useState('');
+	const [filterStatus, setFilterStatus] = useState('');
 
 	const fetchOrders = async () => {
 		try {
@@ -85,6 +89,15 @@ const OrdersPage = () => {
 		}
 	}
 
+	const handleShowItems = (id) => {
+		setShowItems(true)
+		setSelectedOrder(id)
+	}
+
+	const handleHideItems = () => {
+		setShowItems(false);
+	};
+
 	return (
 		<div className={styles.dashboardLayout}>
 			{/* Nếu muốn header nằm ngoài layout chính thì đặt ở đây */}
@@ -93,6 +106,29 @@ const OrdersPage = () => {
 			<div className={styles.mainContentArea}>
 				<Sidebar />
 				<div className={styles.contentPanel}>
+					<div className={styles.searchContainer}>
+						<input
+							type="text"
+							placeholder="Tìm theo tên khách hàng..."
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							className={styles.searchInput}
+						/>
+						Trạng thái
+						<select
+							value={filterStatus}
+							onChange={(e) => setFilterStatus(e.target.value)}
+							className={styles.selectFilter}
+						>
+							<option value="">Tất cả trạng thái</option>
+							<option value="pending">Chờ xử lý</option>
+							<option value="confirmed">Đã xác nhận</option>
+							<option value="completed">Hoàn thành</option>
+							<option value="cancelled">Đã hủy</option>
+						</select>
+					</div>
+
+
 					<div className={styles.addUserSection}>
 						<button className={styles.addUserButton} onClick={handleAddOrder}>
 							<FaPlus className={styles.addUserIcon} />
@@ -109,33 +145,33 @@ const OrdersPage = () => {
 									<td>SĐT</td>
 									<td>email</td>
 									<td>bàn đặt</td>
+									<td>ngày đặt</td>
 									<td>trạng thái</td>
-									<td>Nhân viên hỗ trợ </td>
 									<td>Thao tác</td>
 								</tr>
 							</thead>
 							<tbody>
-								{orders.map((order, index) => (
-									<tr key={order._id}>
-										<td>{++index}</td>
-										<td>
-											{order.customerName}
-										</td>
-										<td>{order.customerPhone}</td>
-										<td>
-											{order.emailCustomer}
-										</td>
-										<td>
-											#{order.table_id.tableNumber}
-										</td>
-										<td>{order.status}</td>
-										<td>{order.user_id?.username || "người dùng tự tạo"}</td>
-										<td>
-											<button className={styles.editButton} onClick={() => { handleShowUpdate(order._id) }}>Sửa</button>
-											<button className={styles.deleteButton} onClick={() => handleDeleteBtn(order._id)}>Xóa</button>
-										</td>
-									</tr>
-								))}
+								{orders
+									.filter(order =>
+										order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+										(filterStatus === '' || order.status === filterStatus)
+									)
+									.map((order, index) => (
+										<tr key={order._id}>
+											<td>{++index}</td>
+											<td>{order.customerName}</td>
+											<td>{order.customerPhone}</td>
+											<td>{order.emailCustomer}</td>
+											<td>#{order.table_id.tableNumber}</td>
+											<td>{new Date(order.orderTime).toLocaleDateString()}</td>
+											<td>{order.status}</td>
+											<td>
+												<button className={styles.viewButton} onClick={() => handleShowItems(order._id)}>Xem</button>
+												<button className={styles.editButton} onClick={() => handleShowUpdate(order._id)}>Sửa</button>
+												<button className={styles.deleteButton} onClick={() => handleDeleteBtn(order._id)}>Xóa</button>
+											</td>
+										</tr>
+									))}
 							</tbody>
 						</table>
 						<div className={styles.paginationContainer}>
@@ -171,8 +207,10 @@ const OrdersPage = () => {
 			{showForm && <CreateOrderForm handleHideRegister={handleHideRegister}
 				onOrderCreated={onUserCreated}
 			/>}
-			{showUpdateForm && <UpdateUserForm id={selectedUser} handleHideUpdate={handleHideUpdate}
-				onOrderUpdate={onOrderUpdate} fetchOrder={fetchOrder}
+			{showUpdateForm && <UpdateOrderForm id={selectedOrder} handleHideUpdate={handleHideUpdate}
+				onOrderUpdate={onOrderUpdate} fetchOrders={fetchOrders}
+			/>}
+			{showItems && <InvoiceOverlay id={selectedOrder} handleHideUpdate={handleHideItems}
 			/>}
 
 		</div >

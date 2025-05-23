@@ -4,24 +4,32 @@ const Category = require("../models/Category");
 // [GET] /api/dishes?page=1&limit=10 - lấy danh sách tất cả món ăn có phân trang 
 exports.getAllDishes = async (req, res) => {
 	try {
-		// phan trang
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
 		const skip = (page - 1) * limit;
 
-		const dishes = await Dish.find({ deleted: false })
-			.skip(skip).limit(limit).sort({ createdAt: -1 });
+		// Lấy tổng số món ăn (không phân trang)
+		const totalCount = await Dish.countDocuments({ deleted: false });
 
-		const totalPage = Math.ceil(dishes.length / limit)
+		const dishes = await Dish.find({ deleted: false })
+			.skip(skip)
+			.limit(limit)
+			.sort({ createdAt: -1 })
+			.populate('category_id', 'name'); // Chỉ lấy category.name
+
+		const totalPage = Math.ceil(totalCount / limit);
+
 		res.json({
-			message: "lấy danh sách món ăn thành công",
+			message: "Lấy danh sách món ăn thành công",
 			dishes,
 			totalPage
 		});
 	} catch (err) {
+		console.error(err);
 		res.status(500).json({ message: 'Lỗi khi lấy danh sách món ăn' });
 	}
 };
+
 
 // [POST] /api/dishes - thêm món ăn mới
 exports.createDish = async (req, res) => {

@@ -8,11 +8,6 @@ const { verifyToken, isAdmin } = require('../middlewares/auth');
 // private
 router.post('/', orderController.createOrder);
 
-// // Tạo đơn hàng mới (kh)
-// // POST /api/orders/client
-// // public
-// router.post('/client', orderController.createOrderClient);
-
 // Xem tất cả đơn hàng
 // GET /api/orders/
 router.get('/', verifyToken, isAdmin, orderController.getAllOrders);

@@ -8,6 +8,7 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 		customerName: '',
 		customerPhone: '',
 		emailCustomer: '',
+		orderTime: '',
 	});
 	const [tables, setTables] = useState([]);
 	const [message, setMessage] = useState('');
@@ -34,7 +35,8 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 			...formData,
 			[e.target.name]: e.target.value,
 		});
-	};
+	}
+
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -49,9 +51,9 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 				customerName: '',
 				customerPhone: '',
 				emailCustomer: '',
+				orderTime: ''
 			});
 			console.log('response', response)
-			onOrderCreated(); // callback cập nhật UI nếu cần
 			setMessage(response.data.message);
 			handleHideRegister();
 			alert('Tạo đơn đặt bàn thành công');
@@ -88,6 +90,18 @@ function CreateOrderForm({ handleHideRegister, onOrderCreated }) {
 								</option>
 							))}
 						</select>
+					</div>
+
+					<div className={styles.formGroup}>
+						<input
+							type="date"
+							name="orderTime" // Đặt tên là bookingDate hoặc tương tự
+							value={formData.orderTime.toString()} // Đảm bảo formData của bạn có thuộc tính này
+							onChange={handleChange}
+							className={styles.formInput}
+							min={new Date().toISOString().split('T')[0]}
+							required
+						/>
 					</div>
 
 					<div className={styles.formGroup}>

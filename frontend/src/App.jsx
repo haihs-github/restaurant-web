@@ -7,6 +7,7 @@ import UserPage from "./pages/UserPage";
 import DishesPage from "./pages/DishesPage";
 import TablesPage from "./pages/TablesPage/TablesPage";
 import OrdersPage from "./pages/OrdersPage";
+import ClientOrder from "./pages/ClientOrder/ClientOrder";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <HomePage />
           } />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/clientOrder" element={<ClientOrder />} />
           <Route path="/users" element={
             <ProtectedRoute requiredRole={"admin"}><UserPage /></ProtectedRoute>} />
           <Route path="/dishes" element={

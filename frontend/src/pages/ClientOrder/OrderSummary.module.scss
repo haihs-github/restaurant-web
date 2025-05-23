@@ -1,0 +1,236 @@
+.orderSummaryContainer {
+	flex: 1.5; // Chiếm khoảng 1.5 phần không gian bên phải
+	background-color: #fff;
+	border-left: 1px solid #e0e0e0;
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 20px; // Để các nút không bị dính vào đáy
+	overflow: hidden; // Ngăn cuộn toàn bộ container
+}
+
+.orderHeader {
+	padding: 15px 20px;
+	border-bottom: 1px solid #e0e0e0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.tableSelection {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background-color: #e8f0fe; // Nền xanh nhạt
+	padding: 8px 12px;
+	border-radius: 5px;
+}
+
+.tableIcon {
+	font-size: 1.2rem;
+	color: #007bff;
+}
+
+.tableSelect {
+	flex: 1;
+	padding: 5px 0;
+	border: none;
+	background-color: transparent;
+	font-size: 0.95rem;
+	font-weight: 500;
+	color: #007bff;
+	appearance: none; // Loại bỏ style mặc định của select
+	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2C197.6L146.2%2C56.8L5.4%2C197.6h281.6z%22%2F%3E%3C%2Fsvg%3E');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+	background-size: 12px auto;
+	padding-right: 25px; // Đảm bảo text không che arrow
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.customerInput {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.customerSearchInput {
+	width: 100%;
+	padding: 8px 30px 8px 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	font-size: 0.9rem;
+	box-sizing: border-box;
+
+	&:focus {
+		outline: none;
+		border-color: #007bff;
+		box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+	}
+}
+
+.dropdownIcon {
+	position: absolute;
+	right: 10px;
+	color: #888;
+	font-size: 0.7rem;
+	pointer-events: none;
+}
+
+.orderItemsList {
+	flex: 1; // Cho phép danh sách cuộn độc lập
+	overflow-y: auto;
+	padding: 20px;
+}
+
+.emptyOrderMessage {
+	text-align: center;
+	color: #777;
+	font-style: italic;
+	padding: 50px 0;
+}
+
+.orderItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #fcfcfc;
+	border: 1px solid #eee;
+	border-radius: 5px;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.itemInfo {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	flex-grow: 1;
+}
+
+.itemName {
+	font-weight: 500;
+	color: #333;
+	font-size: 0.95rem;
+	margin-bottom: 3px;
+}
+
+.itemPrice {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.itemQuantityControl {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.quantityButton {
+	background-color: #e0e0e0;
+	border: none;
+	border-radius: 3px;
+	width: 25px;
+	height: 25px;
+	font-size: 1rem;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #d0d0d0;
+	}
+}
+
+.itemQuantity {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #333;
+	min-width: 20px;
+	text-align: center;
+}
+
+.removeItemButton {
+	background-color: transparent;
+	border: none;
+	color: #dc3545; // Màu đỏ
+	font-size: 1.5rem;
+	cursor: pointer;
+	margin-left: 10px;
+	transition: color 0.2s ease;
+
+	&:hover {
+		color: #a71d2a;
+	}
+}
+
+.orderSummaryFooter {
+	padding: 20px;
+	border-top: 1px solid #e0e0e0;
+	background-color: #fefefe; // Nền nhẹ
+}
+
+.summaryRow {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	font-size: 1rem;
+	color: #555;
+}
+
+.summaryRowTotal {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 15px;
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: #000;
+	padding-top: 10px;
+	border-top: 1px dashed #e0e0e0;
+}
+
+.summaryLabel {
+	font-weight: 500;
+}
+
+.summaryValueTotal {
+	color: #28a745; // Màu xanh lá cho tổng tiền
+}
+
+.actionButtons {
+	display: flex;
+	gap: 15px;
+	margin-top: 25px;
+}
+
+.actionBtn {
+	flex: 1;
+	padding: 12px 15px;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.btnOrder {
+	background-color: #e0e0e0; // Màu xám nhạt
+	color: #555;
+
+	&:hover {
+		background-color: #d0d0d0;
+	}
+}
+
+.btnPayment {
+	background-color: #007bff; // Màu xanh dương
+	color: #fff;
+
+	&:hover {
+		background-color: #0056b3;
+	}
+}

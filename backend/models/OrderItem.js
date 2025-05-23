@@ -16,6 +16,10 @@ const orderItemSchema = new mongoose.Schema({
 		required: true,
 		min: 1,
 	},
+	price: {
+		type: Number,
+		min: 0
+	}
 });
 
 module.exports = mongoose.model('OrderItem', orderItemSchema);

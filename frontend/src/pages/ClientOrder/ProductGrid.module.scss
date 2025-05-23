@@ -1,0 +1,72 @@
+.productGridContainer {
+	flex: 3; // Chiếm phần lớn không gian giữa
+	background-color: #fff;
+	padding: 20px;
+	overflow-y: auto; // Cho phép cuộn khi nội dung dài
+}
+
+.productList {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); // Responsive grid
+	gap: 20px;
+}
+
+.productCard {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+	&:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.productImageWrapper {
+	width: 100%;
+	height: 120px; // Chiều cao cố định cho ảnh
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f7f7f7; // Nền cho ảnh nếu ảnh không có
+}
+
+.productImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; // Đảm bảo ảnh đầy đủ trong khung
+}
+
+.productInfo {
+	padding: 10px 15px;
+	text-align: center;
+}
+
+.productName {
+	font-size: 1rem;
+	font-weight: 500;
+	color: #333;
+	margin-bottom: 5px;
+	white-space: nowrap; // Ngăn tên sản phẩm xuống dòng
+	overflow: hidden; // Ẩn phần bị tràn
+	text-overflow: ellipsis; // Thêm dấu ... nếu bị tràn
+}
+
+.productPrice {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: #e20000; // Màu đỏ
+}
+
+.noProductsMessage {
+	grid-column: 1 / -1; // Chiếm toàn bộ chiều rộng grid
+	text-align: center;
+	color: #777;
+	font-size: 1.1rem;
+	padding: 50px 0;
+}

@@ -119,7 +119,7 @@ const TablesPage = () => {
 											#{table.tableNumber}
 										</td>
 										<td>{table.capacity}</td>
-										<td>{table.status}</td>
+										<td>{<td>{table.status === 'available' ? 'Đang mở' : 'Đang đóng'}</td>}</td>
 										<td>
 											<button className={styles.editButton} onClick={() => { handleShowUpdate(table._id) }}>Sửa</button>
 											<button className={styles.deleteButton} onClick={() => handleDeleteBtn(table._id)}>Xóa</button>

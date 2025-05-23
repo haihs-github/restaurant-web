@@ -27,6 +27,11 @@ function Header() {
 					<li><Link to="/">Trang Chủ</Link></li>
 				</ul>
 			</nav>
+			<nav className={styles.headerNav}>
+				<ul>
+					<li><Link to="/clientOrder">Gọi món</Link></li>
+				</ul>
+			</nav>
 			{/* Thêm phần nút Đăng nhập/Đăng xuất */}
 			<div className={styles.userActions}> {/* Áp dụng CSS Module cho div này */}
 				{user ? (
@@ -34,7 +39,6 @@ function Header() {
 					<>
 						<Button content={user.username} />
 						<div onClick={handleLogoutBtn} ><Button content="đăng xuất" backgroundColor="red" color="#fff" /></div>
-
 					</>
 				) : (
 					// Nếu chưa đăng nhập, hiển thị nút Đăng nhập
