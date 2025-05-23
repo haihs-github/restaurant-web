@@ -103,7 +103,6 @@ const OrderSummary = ({ orders, onRemoveOrderItem, handleQuantityChange, total, 
 					</span>
 				</div>
 				<div className={styles.actionButtons}>
-					<button className={`${styles.actionBtn} ${styles.btnOrder}`}>Gọi món</button>
 					<button
 						className={`${styles.actionBtn} ${styles.btnPayment}`}
 						onClick={() => updateOrder(selectedOrder)}

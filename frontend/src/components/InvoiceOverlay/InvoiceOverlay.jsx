@@ -88,10 +88,10 @@ const InvoiceOverlay = ({ id, handleHideUpdate }) => {
                 <td className={styles.tableCellDescription}>{item.dish_id?.name || 'Không có tên'}</td>
                 <td className={styles.tableCellMonths}>{item.quantity}</td>
                 <td className={styles.tableCellUnitPrice}>
-                  {item.dish_id?.price}
+                  {item.dish_id?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                 </td>
                 <td className={styles.tableCellAmount}>
-                  {(item.dish_id?.price * item.quantity)}
+                  {(item.dish_id?.price * item.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                 </td>
               </tr>
             ))}
@@ -110,7 +110,7 @@ const InvoiceOverlay = ({ id, handleHideUpdate }) => {
               <td colSpan="3" className={styles.tableFooterTotalLabel}>
                 Tổng
               </td>
-              <td className={styles.tableFooterTotalAmount}>${totalAmount.toFixed(2)}</td>
+              <td className={styles.tableFooterTotalAmount}>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
             </tr>
           </tfoot>
         </table>

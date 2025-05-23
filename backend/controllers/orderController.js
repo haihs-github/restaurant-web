@@ -16,11 +16,11 @@ exports.createOrder = async (req, res) => {
 			return res.status(400).json({ message: "Thiếu dữ liệu khi tạo đơn đặt bàn" });
 		}
 
-		const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
-		if (exsitingOrder) {
-			console.log("ban da dat")
-			return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
-		}
+		// const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
+		// if (exsitingOrder) {
+		// 	console.log("ban da dat")
+		// 	return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
+		// }
 		// if (!table) {
 		// 	return res.status(404).json({ message: "Không tìm thấy bàn" });
 		// }
