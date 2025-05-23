@@ -11,6 +11,7 @@ router.post('/', orderController.createOrder);
 // Xem tất cả đơn hàng
 // GET /api/orders/
 router.get('/', orderController.getAllOrders);
+router.get('/filter/', orderController.getOrderFilter);
 
 // xem chi tiết đơn hàng
 // GET /api/orders/:orderId

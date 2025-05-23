@@ -2,14 +2,13 @@ import React, { useEffect } from 'react';
 import styles from './OrderSummary.module.scss';
 import axios from 'axios';
 
-const OrderSummary = ({ orders, onRemoveOrderItem, handleQuantityChange, total, selectedOrder, setSelectedOrder, orderItems }) => {
+const OrderSummary = ({ orders, onRemoveOrderItem, handleQuantityChange, total, selectedOrder, setSelectedOrder, orderItems, onPay }) => {
 
 	useEffect(() => {
 		console.log('orders', orders)
 	}, [orders])
 	useEffect(() => {
 		console.log('selectedOrder', selectedOrder)
-
 	}, [selectedOrder])
 	useEffect(() => {
 		console.log('orderItems', orderItems)
@@ -17,18 +16,19 @@ const OrderSummary = ({ orders, onRemoveOrderItem, handleQuantityChange, total, 
 
 	const updateOrder = async (selectedOrder) => {
 		try {
-			const res = await axios.put(`http://localhost:5000/api/orders/doneOrder/${selectedOrder._id}`, {
-				orderItems: orderItems
+			const res = await axios.put(`http://localhost:5000/api/orders/doneOrder/${selectedOrder}`, {
+				orderItems
 			}, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
+					'Content-Type': 'application/json',
 				},
 			});
 			alert("Cập nhật đơn hàng thành công");
+			onPay()
 			console.log("Cập nhật đơn hàng thành công:", res.data);
 		} catch (error) {
 			alert("Lỗi khi cập nhật đơn hàng");
-
 			console.error("Lỗi khi cập nhật đơn hàng:", error);
 		}
 	};

@@ -128,20 +128,25 @@ exports.doneOrder = async (req, res) => {
 	try {
 		const { orderId } = req.params;
 		const orderItems = req.body.orderItems
+		console.log("orderItems 1", orderItems)
 		console.log(orderItems)
 		let saveOrder = []
 		let totalAmount = 0
 		for (const item of orderItems) {
 			totalAmount += item.price * item.quantity
-			saveOrder.push({ dish_id: item.dish_id, price: item.price, quantity: item.quantity })
+			await OrderItem.create({
+				order_id: orderId,
+				dish_id: item.dish_id,
+				price: item.price,
+				quantity: item.quantity
+			});
 		}
 
-
+		console.log('orderItems', orderItems)
 		const updatedOrder = await Order.findByIdAndUpdate(
 			orderId,
 			{
-				status: 'completed',
-				orderItems: saveOrder,
+				status: "completed",
 				totalAmount: totalAmount
 			},
 			{ new: true, runValidators: true }
@@ -177,11 +182,12 @@ exports.getAllOrders = async (req, res) => {
 			.sort({ createdAt: -1 });
 
 		const totalPage = Math.ceil(totalOrders / limit);
-
+		const getAllOrders = await Order.find({ deleted: false })
 		res.status(200).json({
 			message: "Lấy danh sách đơn đặt bàn thành công",
 			orders,
-			totalPage
+			totalPage,
+			getAllOrders
 		});
 	} catch (err) {
 		res.status(500).json({
@@ -190,6 +196,61 @@ exports.getAllOrders = async (req, res) => {
 		});
 	}
 };
+
+//[GET] api/orders?page=1&limit=10?customerName=hải&status="" Xem danh sách đơn đặt bàn theo query
+// [GET] /api/orders?page=1&limit=10&customerName=Hải&status=pending
+exports.getOrderFilter = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+		const skip = (page - 1) * limit;
+
+		const { customerName = '', status = '' } = req.query;
+
+		// Xây điều kiện lọc động
+		const query = { deleted: false };
+
+		if (customerName !== '') {
+			query.customerName = { $regex: customerName, $options: 'i' };
+		}
+		if (status !== '') {
+			query.status = status;
+		}
+
+		// Đếm tổng số đơn hàng sau khi lọc
+		const totalOrders = await Order.countDocuments(query);
+
+		// Lấy danh sách đơn hàng theo trang hiện tại
+		const orders = await Order.find(query)
+			.populate('table_id', 'tableNumber')
+			.populate('user_id', 'username')
+			.skip(skip)
+			.limit(limit)
+			.sort({ createdAt: -1 });
+
+		const totalPage = Math.ceil(totalOrders / limit);
+
+		// Lấy toàn bộ đơn hàng nếu muốn lọc thêm ở frontend
+		const getAllOrders = await Order.find(query)
+			.populate('table_id', 'tableNumber')
+			.populate('user_id', 'username')
+			.sort({ createdAt: -1 });
+
+		res.status(200).json({
+			message: 'Lấy danh sách đơn đặt bàn thành công',
+			orders,
+			totalPage,
+			getAllOrders,
+		});
+	} catch (err) {
+		res.status(500).json({
+			message: 'Lỗi khi lấy danh sách đơn đặt bàn',
+			error: err.message,
+		});
+	}
+};
+
+
 
 //[GET] api/orders/:orderId xem chi tiết đơn đặt bàn 
 exports.getOrderDetail = async (req, res) => {

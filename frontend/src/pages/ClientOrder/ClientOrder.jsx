@@ -33,35 +33,38 @@ const ClientOrder = () => {
 	}, []);
 
 	// fetch order 
+
+	const fetchOrders = async () => {
+		try {
+			const res = await axios.get(`http://localhost:5000/api/orders?page=1&limit=10000?`, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('token')}`,
+				},
+			});
+			console.log('res.data.orders', res.data)
+			setOrders(res.data.orders);
+			setSelectedOrder(res.data.orders[0]);
+		} catch (err) {
+			console.error('Lỗi khi lấy order:', err);
+		}
+	};
+
 	useEffect(() => {
-		const fetchOrders = async () => {
-			try {
-				const res = await axios.get(`http://localhost:5000/api/orders?page=1&limit=10?`, {
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem('token')}`,
-					},
-				});
-				console.log('res.data.orders', res.data)
-				setOrders(res.data.orders);
-				setSelectedOrder(res.data.orders[0]);
-			} catch (err) {
-				console.error('Lỗi khi lấy order:', err);
-			}
-		};
+
 		fetchOrders();
 	}, []);
 
 	// fetch the loai 
+	const fetchCategories = async () => {
+		try {
+			const res = await axios.get('http://localhost:5000/api/categories');
+			setCategories(res.data.categories); // giả sử response là { categories: [...] }
+		} catch (err) {
+			console.error('Lỗi khi lấy danh sách danh mục:', err);
+		}
+	};
 
 	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const res = await axios.get('http://localhost:5000/api/categories');
-				setCategories(res.data.categories); // giả sử response là { categories: [...] }
-			} catch (err) {
-				console.error('Lỗi khi lấy danh sách danh mục:', err);
-			}
-		};
 
 		fetchCategories(); // gọi thêm để lấy tên danh mục
 	}, []);
@@ -114,6 +117,10 @@ const ClientOrder = () => {
 		return orderItems.reduce((total, item) => total + item.price * item.quantity, 0);
 	};
 
+	const onPay = async () => {
+		await fetchOrders()
+	}
+
 	return (
 		<div className={styles.clientOrderContainer}>
 			<Header />
@@ -138,6 +145,7 @@ const ClientOrder = () => {
 					total={calculateTotal()}
 					selectedOrder={selectedOrder}
 					setSelectedOrder={setSelectedOrder}
+					onPay={onPay}
 				/>
 			</div>
 		</div>
