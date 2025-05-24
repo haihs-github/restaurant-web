@@ -74,10 +74,6 @@ const DishesPage = () => {
 		fetchCategories(); // gọi thêm để lấy tên danh mục
 	}, [page, userCreated]);
 
-	const getCategoryName = (id) => {
-		const category = categories.find((c) => c._id === id);
-		return category ? category.name : 'Không rõ';
-	};
 
 	const [editingDish, setEditingDish] = useState(null);
 
@@ -120,7 +116,7 @@ const DishesPage = () => {
 										<td>
 											{dish.name}
 										</td>
-										<td>{getCategoryName(dish.category_id)}</td>
+										<td>{dish.category_id.name}</td>
 
 										<td>
 											{dish.price}

@@ -9,7 +9,6 @@ const dishRoutes = require('./routes/dishRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const orderItemRoutes = require('./routes/orderItemRoutes');
 const userRouter = require('./routes/userRoutes')
-const invoiceRouter = require('./routes/invoiceRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
 
 
@@ -26,7 +25,6 @@ app.use('/api/tables', tableRoutes);
 app.use('/api/dishes', dishRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/orderItems', orderItemRoutes);
-app.use('/api/invoices', invoiceRouter);
 app.use('/api/categories', categoryRoutes);
 
 
