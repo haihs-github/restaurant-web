@@ -1,0 +1,25 @@
+.statisticsPageContainer {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #f0f2f5; // Light grey background for the page
+	padding-top: 60px;
+}
+
+.contentWrapper {
+	display: flex;
+	flex: 1;
+}
+
+.mainContent {
+	flex: 1;
+	padding: 20px;
+	background-color: #f0f2f5; // Ensure main content area has a consistent background
+}
+
+.cardsGrid {
+	display: grid;
+	grid-template-columns: 0.8fr 1.2fr; // Adjust ratio based on image
+	gap: 20px;
+	margin-bottom: 20px;
+}

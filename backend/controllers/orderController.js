@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Table = require('../models/Table');
 const Dish = require('../models/Dish');
 const OrderItem = require('../models/OrderItem')
+const dayjs = require('dayjs');
 
 //[POST] /api/orders/ Tạo đơn đặt bàn mới ( admin)
 exports.createOrder = async (req, res) => {
@@ -15,19 +16,6 @@ exports.createOrder = async (req, res) => {
 			console.log("thieu du lieu")
 			return res.status(400).json({ message: "Thiếu dữ liệu khi tạo đơn đặt bàn" });
 		}
-
-		// const exsitingOrder = await Order.findOne({ table_id: table_id, orderTime: orderTime, status: "confirmed", deleted: false });
-		// if (exsitingOrder) {
-		// 	console.log("ban da dat")
-		// 	return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
-		// }
-		// if (!table) {
-		// 	return res.status(404).json({ message: "Không tìm thấy bàn" });
-		// }
-		// if (table.status === 'booked') {
-		// 	return res.status(400).json({ message: "Bàn này đã được đặt rồi" });
-		// }
-
 		let totalAmount = 0;
 
 		// Tạo đơn đặt bàn
@@ -197,8 +185,7 @@ exports.getAllOrders = async (req, res) => {
 	}
 };
 
-//[GET] api/orders?page=1&limit=10?customerName=hải&status="" Xem danh sách đơn đặt bàn theo query
-// [GET] /api/orders?page=1&limit=10&customerName=Hải&status=pending
+// [GET] /api/orders?page=1&limit=10&customerName=Hải&status=pendingXem danh sách đơn đặt bàn theo query
 exports.getOrderFilter = async (req, res) => {
 	try {
 		const page = parseInt(req.query.page) || 1;
@@ -300,5 +287,66 @@ exports.deleteOrderById = async (req, res) => {
 			message: 'Lỗi khi xóa chi tiết đơn đặt bàn',
 			error: err.message
 		});
+	}
+};
+
+//[GET] api/time/:time
+exports.getOrderByTime = async (req, res) => {
+	try {
+		const { time } = req.params;
+
+		const now = dayjs();
+		let startDate, endDate;
+
+		if (time === 'ngày') {
+			startDate = now.startOf('day');
+			endDate = now.endOf('day');
+		} else if (time === 'tháng') {
+			startDate = now.startOf('month');
+			endDate = now.endOf('month');
+		} else if (time === 'năm') {
+			startDate = now.startOf('year');
+			endDate = now.endOf('year');
+		} else {
+			return res.status(400).json({ message: 'Tham số thời gian không hợp lệ. Chỉ nhận ngày, tháng, năm' });
+		}
+
+		// Lấy đơn hàng theo khoảng thời gian
+		const orders = await Order.find({
+			orderTime: {
+				$gte: startDate.toISOString(),
+				$lte: endDate.toISOString(),
+			},
+		});
+
+		// Phân loại đơn theo trạng thái
+		const statusCount = {
+			pending: 0,
+			confirmed: 0,
+			completed: 0,
+			rejected: 0,
+		};
+
+		let totalAmount = 0;
+
+		orders.forEach(order => {
+			const status = order.status;
+			if (statusCount.hasOwnProperty(status)) {
+				statusCount[status]++;
+			}
+			// Cộng dồn tiền (nếu có trường totalAmount)
+			if (order.totalAmount) {
+				totalAmount += order.totalAmount;
+			}
+		});
+
+		res.status(200).json({
+			totalOrders: orders.length,
+			totalAmount,
+			statusCount,
+			orders,
+		});
+	} catch (error) {
+		res.status(500).json({ message: 'Lỗi khi lấy đơn hàng theo thời gian', error: error.message });
 	}
 };

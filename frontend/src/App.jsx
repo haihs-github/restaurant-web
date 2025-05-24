@@ -8,6 +8,7 @@ import DishesPage from "./pages/DishesPage";
 import TablesPage from "./pages/TablesPage/TablesPage";
 import OrdersPage from "./pages/OrdersPage";
 import ClientOrder from "./pages/ClientOrder/ClientOrder";
+import StatisticsPage from "./pages/StatisticsPage/StatisticsPage";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
             <ProtectedRoute requiredRole={"admin"}><TablesPage /></ProtectedRoute>} />
           <Route path="/orders" element={
             <ProtectedRoute ><OrdersPage /></ProtectedRoute>} />
+          <Route path="/statictis" element={
+            <ProtectedRoute requiredRole={"admin"}><StatisticsPage /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider >

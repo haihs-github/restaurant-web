@@ -19,7 +19,7 @@ const OrdersPage = () => {
 	const [selectedOrder, setSelectedOrder] = useState(null);
 	const [showItems, setShowItems] = useState(false);
 	const [searchTerm, setSearchTerm] = useState('');
-	const [filterStatus, setFilterStatus] = useState('');
+	const [filterStatus, setFilterStatus] = useState('pending');
 
 	const fetchOrders = async () => {
 		try {
@@ -27,12 +27,6 @@ const OrdersPage = () => {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
-				// params: {
-				// 	page,
-				// 	limit: 10,
-				// 	search: searchTerm,
-				// 	status: filterStatus
-				// }
 			});
 			setOrders(res.data.orders);
 			setTotalPage(res.data.totalPage);
@@ -99,6 +93,14 @@ const OrdersPage = () => {
 		setShowItems(false);
 	};
 
+	const statusTrans = {
+		pending: 'chờ xử lý',
+		confirmed: 'Đã xác nhận',
+		completed: 'Hoàn thành',
+		rejected: 'Đã hủy'
+	}
+	const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
 	return (
 		<div className={styles.dashboardLayout}>
 			<Header />
@@ -126,10 +128,10 @@ const OrdersPage = () => {
 							className={styles.selectFilter}
 						>
 							<option value="">Tất cả trạng thái</option>
-							<option value="pending">Chờ xử lý</option>
-							<option value="confirmed">Đã xác nhận</option>
-							<option value="completed">Hoàn thành</option>
-							<option value="cancelled">Đã hủy</option>
+							<option value="pending">{statusTrans.pending}</option>
+							<option value="confirmed">{statusTrans.confirmed}</option>
+							<option value="completed">{statusTrans.completed}</option>
+							<option value="rejected">{statusTrans.rejected}</option>
 						</select>
 					</div>
 
@@ -156,14 +158,16 @@ const OrdersPage = () => {
 							</thead>
 							<tbody>
 								{orders.map((order, index) => (
-									<tr key={order._id}>
+									<tr key={order._id} className={styles[`status${capitalize(order.status)}`]}>
 										<td>{index + 1 + (page - 1) * 10}</td>
 										<td>{order.customerName}</td>
 										<td>{order.customerPhone}</td>
 										<td>{order.emailCustomer}</td>
 										<td>#{order.table_id?.tableNumber}</td>
-										<td>{new Date(order.orderTime).toLocaleDateString()}</td>
-										<td>{order.status}</td>
+										<td><h4>{new Date(order.orderTime).toLocaleTimeString()}</h4>
+											{new Date(order.orderTime).toLocaleDateString()}
+										</td>
+										<td>{statusTrans[order.status]}</td>
 										<td>
 											<button className={styles.viewButton} onClick={() => handleShowItems(order._id)}>Xem</button>
 											<button className={styles.editButton} onClick={() => handleShowUpdate(order._id)}>Sửa</button>

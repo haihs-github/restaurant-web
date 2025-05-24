@@ -1,0 +1,35 @@
+.kpiCard {
+	background-color: #ffffff;
+	padding: 20px 20px 0px 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.kpiTitle {
+	font-size: 0.9rem;
+	color: #666;
+	margin-bottom: 5px;
+}
+
+.kpiValue {
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10px;
+}
+
+.kpiChange {
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.positiveChange {
+	color: #28a745; // Green
+}
+
+.negativeChange {
+	color: #dc3545; // Red
+}

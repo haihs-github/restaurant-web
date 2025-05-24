@@ -122,16 +122,7 @@
 }
 
 .table tbody {
-	tr {
-		&:nth-child(even) {
-			background-color: #fcfcfc;
-			/* Xen kẽ màu hàng */
-		}
 
-		&:hover {
-			background-color: #e9ecef;
-		}
-	}
 
 	td {
 		padding: 12px 15px;
@@ -298,4 +289,21 @@
 	padding: 0.5rem;
 	border-radius: 5px;
 	border: 1px solid #ccc;
+}
+
+
+.statusPending {
+	background-color: #fff3cd; // vàng nhạt
+}
+
+.statusConfirmed {
+	background-color: #d1e7dd; // xanh lá nhạt
+}
+
+.statusCompleted {
+	background-color: #6ff68f; // xanh dương nhạt
+}
+
+.statusRejected {
+	background-color: #f8d7da; // đỏ nhạt
 }

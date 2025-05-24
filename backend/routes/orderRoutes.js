@@ -18,6 +18,11 @@ router.get('/filter/', orderController.getOrderFilter);
 // private
 router.get('/:orderId', verifyToken, orderController.getOrderDetail);
 
+// xem donhang theo time
+// GET /api/time/:time
+// private
+router.get('/time/:time', verifyToken, isAdmin, orderController.getOrderByTime);
+
 
 //cập nhật đơn hàng 
 // PUT /api/orders/:orderId

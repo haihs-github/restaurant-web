@@ -123,12 +123,12 @@ function UpdateOrderForm({ id, handleHideUpdate, onOrderUpdate, fetchOrders }) {
 					{/* Ô input nhập ngày mới */}
 					<div className={styles.formGroup}>
 						<input
-							type="date"
+							type="datetime-local"
 							name="orderTime"
-							value={formData.orderTime} // Đảm bảo formData của bạn có thuộc tính này
+							value={formData.orderTime}
 							onChange={handleChange}
 							className={styles.formInput}
-							min={new Date().toISOString().split('T')[0]}
+							min={new Date().toISOString().slice(0, 16)} // YYYY-MM-DDTHH:mm
 							required
 						/>
 					</div>

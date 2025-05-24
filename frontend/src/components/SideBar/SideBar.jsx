@@ -25,32 +25,32 @@ const Sidebar = () => {
 					<li className={styles.navItem}>
 						<Link to="/users">
 							<FaUsers className={styles.navIcon} />
-							<span>User</span>
+							<span>Nhân viên</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link to="/dishes">
 							<FaLock className={styles.navIcon} />
-							<span>Dishes</span>
+							<span>Món ăn</span>
 
 						</Link>
 					</li>
 					<li className={`${styles.navItem}`}>
 						<Link to="/tables">
 							<FaUsers className={styles.navIcon} />
-							<span>Tables</span>
+							<span>Bàn ăn</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link to="/orders">
 							<FaUserFriends className={styles.navIcon} />
-							<span>Orders</span>
+							<span>Đơn đặt bàn</span>
 						</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/invoices">
+						<Link to="/statictis">
 							<FaRegFileAlt className={styles.navIcon} />
-							<span>Invoices</span>
+							<span>Thống kê</span>
 
 						</Link>
 					</li>

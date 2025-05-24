@@ -1,0 +1,89 @@
+.pageViewsChartCard {
+	background-color: #ffffff;
+	padding: 25px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	position: relative; // For tooltip positioning
+	height: 100%;
+}
+
+.cardTitle {
+	font-size: 1rem;
+	font-weight: 500;
+	color: #333;
+	margin-bottom: 15px;
+}
+
+.chartArea {
+	position: relative;
+	height: 100px; // Fixed height for the chart area
+	margin-bottom: 20px;
+	display: flex;
+	align-items: flex-end;
+	gap: 2px; // Space between bars
+}
+
+.dummyChartBars {
+	display: flex;
+	align-items: flex-end;
+	gap: 2px;
+	flex: 1;
+}
+
+.bar {
+	width: 6px; // Width of each bar
+	background-color: #bbdefb; // Light blue color for bars
+	border-radius: 1px;
+}
+
+.tooltipExample {
+	position: absolute;
+	right: 10px; // Position it as in the image
+	top: 50%; // Adjust vertically
+	transform: translateY(-50%);
+	background-color: #333;
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 5px;
+	font-size: 0.8rem;
+	white-space: nowrap; // Keep text on one line
+	pointer-events: none; // Make it non-interactive
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tooltipValue {
+	font-weight: bold;
+}
+
+.tooltipTime {
+	font-size: 0.7rem;
+	opacity: 0.8;
+}
+
+
+.viewReferralsButton {
+	background: none;
+	border: 1px solid #ddd;
+	color: #666;
+	padding: 10px 15px;
+	border-radius: 5px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+
+	&:hover {
+		background-color: #f5f5f5;
+		border-color: #bbb;
+	}
+}
+
+.arrowIcon {
+	font-size: 0.75rem;
+}

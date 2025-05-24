@@ -41,7 +41,10 @@ const OrderSummary = ({ orders, onRemoveOrderItem, handleQuantityChange, total, 
 					<span className={styles.tableIcon}>&#x268F;</span>
 					<select
 						value={selectedOrder}
-						onChange={(e) => setSelectedOrder(e.target.value)} // dùng value, không dùng object
+						onChange={(e) => {
+							console.log('e.taget.value', e.target.value)
+							setSelectedOrder(e.target.value)
+						}} // dùng value, không dùng object
 						className={styles.tableSelect}
 					>
 						{orders.filter(order => order.status === "confirmed").map(order => (

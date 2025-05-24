@@ -11,7 +11,7 @@ const ClientOrder = () => {
 	const [selectedCategory, setSelectedCategory] = useState('all'); // 'all', 'food', 'drinks'
 	const [orders, setOrders] = useState([]);
 	const [orderItems, setOrderItems] = useState([]);
-	const [selectedOrder, setSelectedOrder] = useState(null); // Placeholder for table selection
+	const [selectedOrder, setSelectedOrder] = useState(''); // Placeholder for table selection
 
 	const [dishes, setDishes] = useState([]);
 	const [page, setPage] = useState(1);
@@ -41,16 +41,16 @@ const ClientOrder = () => {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			});
-			console.log('res.data.orders', res.data)
-			setOrders(res.data.orders);
-			setSelectedOrder(res.data.orders[0]);
+			console.log('res.data.orders[0]._id', res.data.orders[0]._id)
+
+			setOrders(res.data.orders.filter(o => o.status === 'confirmed'));
+			setSelectedOrder(res.data.orders[0]._id);
 		} catch (err) {
 			console.error('Lỗi khi lấy order:', err);
 		}
 	};
 
 	useEffect(() => {
-
 		fetchOrders();
 	}, []);
 
